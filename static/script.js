@@ -57,30 +57,116 @@ function formatResponse(responseText, responseDiv) {
     const contentDiv = document.createElement('div');
     contentDiv.innerHTML = htmlContent;
 
-    // Append copy buttons and line numbers to code blocks
+    // Define available files and base directory
+    const availableFiles = [
+        'static/script.js',
+        'static/styles.css',
+        'index.html',
+        'main.py',
+        'test.py'
+    ];
+    const baseDirectory = '/home/jack/aaaDEV/';
+
+    // Append copy buttons, file selection, and line numbers to code blocks
     const codeBlocks = contentDiv.querySelectorAll('pre code');
     codeBlocks.forEach(codeBlock => {
         const pre = codeBlock.parentNode;
         // Add 'line-numbers' class to <pre> element
         pre.classList.add('line-numbers');
 
+        // Create the header container for the code block
+        const codeHeader = document.createElement('div');
+        codeHeader.className = 'code-header';
+
+        // Create the file select dropdown
+        const fileSelect = document.createElement('select');
+        fileSelect.className = 'file-select';
+
+        // Add options to the select
+        availableFiles.forEach(filePath => {
+            const option = document.createElement('option');
+            option.value = filePath;
+            option.textContent = filePath;
+            fileSelect.appendChild(option);
+        });
+
+        // Add an option for custom file path
+        const customOption = document.createElement('option');
+        customOption.value = 'custom';
+        customOption.textContent = 'Custom Path...';
+        fileSelect.appendChild(customOption);
+
+        // Create an input field for custom file path
+        const customFileInput = document.createElement('input');
+        customFileInput.type = 'text';
+        customFileInput.placeholder = 'Enter custom file path...';
+        customFileInput.style.display = 'none'; // Hide it initially
+        customFileInput.className = 'custom-file-input';
+
+        // When 'Custom Path...' is selected, show the input field
+        fileSelect.addEventListener('change', () => {
+            if (fileSelect.value === 'custom') {
+                customFileInput.style.display = 'inline-block';
+            } else {
+                customFileInput.style.display = 'none';
+            }
+        });
+
+        // Create the save button
+        const saveButton = document.createElement('button');
+        saveButton.textContent = 'Save';
+        saveButton.className = 'save-button';
+        saveButton.onclick = () => saveCodeToFile(codeBlock, fileSelect, customFileInput);
+
+        // Create the copy button
         const copyButton = document.createElement('button');
         copyButton.textContent = 'Copy';
         copyButton.className = 'copy-button';
         copyButton.onclick = () => copyCodeToClipboard(codeBlock, copyButton);
 
-        // Wrap pre and copyButton in a container
+        // Append elements to the code header
+        codeHeader.appendChild(fileSelect);
+        codeHeader.appendChild(customFileInput);
+        codeHeader.appendChild(saveButton);
+        codeHeader.appendChild(copyButton);
+
+        // Wrap pre and codeHeader in a container
         const codeContainer = document.createElement('div');
         codeContainer.className = 'code-container';
         pre.parentNode.replaceChild(codeContainer, pre);
+        codeContainer.appendChild(codeHeader);
         codeContainer.appendChild(pre);
-        codeContainer.appendChild(copyButton);
     });
 
     responseDiv.appendChild(contentDiv);
 
     // After content is added to the DOM, highlight code blocks
     Prism.highlightAll();
+}
+
+function saveCodeToFile(codeBlock, fileSelect, customFileInput) {
+    const codeContent = codeBlock.textContent;
+    let filePath = fileSelect.value;
+    if (filePath === 'custom') {
+        // Get custom file path from input
+        const customPath = customFileInput.value.trim();
+        if (!customPath) {
+            alert('Please enter a valid file path.');
+            return;
+        }
+        // Ensure the custom path is within the base directory
+        filePath = customPath;
+    }
+
+    // Send the code and file path to the backend API
+    axios.post('/save_code', {
+        code: codeContent,
+        file_path: filePath
+    }).then(response => {
+        alert('Code saved successfully!');
+    }).catch(error => {
+        alert('Failed to save code: ' + error.message);
+    });
 }
 
 function copyCodeToClipboard(codeBlock, button) {

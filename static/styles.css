@@ -256,3 +256,46 @@ code {
 #response blockquote p {
     color: #d4d4d4;
 }
+/* Code Header */
+.code-header {
+    display: flex;
+    align-items: center;
+    background-color: #252526;
+    padding: 5px 10px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.file-select, .custom-file-input {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    border: 1px solid #3c3c3c;
+    border-radius: 3px;
+    padding: 5px;
+    margin-right: 10px;
+    font-size: 14px;
+}
+
+.save-button {
+    background-color: #0e639c;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.3s;
+}
+
+.save-button:hover {
+    background-color: #1177bb;
+}
+
+/* Adjusted Code Container */
+.code-container {
+    margin-bottom: 20px;
+    border: 1px solid #3c3c3c;
+    border-radius: 5px;
+    overflow: hidden;
+}

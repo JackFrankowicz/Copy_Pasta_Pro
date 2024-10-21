@@ -1,3 +1,5 @@
+# /home/jack/aaaDEV/main.py
+
 import logging
 import os
 from fastapi import FastAPI, Request
@@ -49,6 +51,31 @@ async def o1_stream(request: Request):
     except Exception as error:
         logger.error(f"Error in o1_stream: {error}")
         return PlainTextResponse(content=f"Unexpected error: {str(error)}", status_code=500)
+
+@app.post("/save_code")
+async def save_code(request: Request):
+    """
+    Handles POST requests to save code snippets to files.
+    Expects JSON input with 'code' and 'file_path' fields.
+    """
+    try:
+        data = await request.json()
+        code_content = data.get('code')
+        file_path = data.get('file_path')
+
+        base_directory = '/home/jack/aaaDEV/'
+        full_path = os.path.join(base_directory, file_path)
+
+        # Write the code content to the file
+        with open(full_path, 'w') as f:
+            f.write(code_content)
+
+        logger.info(f"Code saved to {full_path}")
+        return {"status": "success", "message": "Code saved successfully."}
+
+    except Exception as error:
+        logger.error(f"Error saving code: {error}")
+        return PlainTextResponse(content=f"Failed to save code: {str(error)}", status_code=500)
 
 @app.get("/")
 async def read_root():
