@@ -386,17 +386,33 @@ button {
     border: 1px solid #3c3c3c;
 }
 
-/* Drag Handle */
+
+/* CSS for the drag handle */
 .drag-handle {
-    cursor: move;
+    cursor: grab; /* Open hand */
+    color: #adb5bd;
+
     position: absolute;
-    top: 10px;
+    top: 3px;
     right: 10px;
     color: #d4d4d4;
-    font-size: 18px;
+    font-size: 15px;
 }
+
+.drag-handle:hover {
+    color: #6c757d;
+}
+
+.drag-handle:active {
+    cursor: grabbing; /* Closed hand when grabbing */
+    color: #495057;
+}
+
+
+
 
 /* Adjust padding-top if necessary to avoid overlap */
 .input-area {
     padding-top: 30px; /* Adjust based on the size of the drag handle */
 }
+

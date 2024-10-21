@@ -112,7 +112,7 @@ function addInputArea(initialValue = '') {
     // Create the drag handle
     const dragHandle = document.createElement('span');
     dragHandle.className = 'drag-handle';
-    dragHandle.innerHTML = '<i class="fas fa-arrows-alt"></i>';
+    dragHandle.innerHTML = '<i class="fas fa-grip-lines"></i>';
 
     // Append the drag handle to the input area
     inputArea.appendChild(dragHandle);
