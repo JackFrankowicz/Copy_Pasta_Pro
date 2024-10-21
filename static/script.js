@@ -43,16 +43,43 @@ async function sendRequest() {
         const completionTokens = response.data.completion_tokens;
         const totalTokens = response.data.total_tokens;
 
+        // Pricing per million tokens for each model
+        const pricing = {
+            'gpt-4o': {
+                input: 2.50 / 1000000,
+                output: 10.00 / 1000000
+            },
+            'gpt-4o-mini': {
+                input: 0.150 / 1000000,
+                output: 0.600 / 1000000
+            },
+            'o1-preview': {
+                input: 15.00 / 1000000,
+                output: 60.00 / 1000000
+            },
+            'o1-mini': {
+                input: 3.00 / 1000000,
+                output: 12.00 / 1000000
+            }
+        };
+
+        // Get the pricing for the selected model
+        const modelPricing = pricing[model];
+
+        // Calculate the total cost
+        const inputCost = promptTokens * modelPricing.input;
+        const outputCost = completionTokens * modelPricing.output;
+        const totalCost = inputCost + outputCost;
+
         // Display "There it is!" message at the top with detailed token info
         responseDiv.innerHTML = '';
         const completionMessage = document.createElement('div');
         completionMessage.innerHTML = `
             <p>There it is!</p>
             <p>Model used: <span>${model}</span></p>
-            <p>Input tokens used: <span>${promptTokens}</span></p>
-            <p>Output tokens used: <span>${completionTokens}</span></p>
-            <p>Total tokens used: <span>${totalTokens}</span></p>
+            <p>Input tokens: <span>${promptTokens}</span> / Output tokens: <span>${completionTokens}</span></p>
             <p>Total time taken: <span>${elapsedTime} seconds</span></p>
+            <p>Total cost: <span>$${totalCost.toFixed(4)}</span></p> <!-- Updated to 4 decimals -->
         `;
         responseDiv.appendChild(completionMessage);
 
