@@ -16,19 +16,30 @@
             <h1>O1 Model Interface</h1>
         </header>
         <main>
-            <!-- File Selection Dropdown -->
-            <label for="file-select" class="file-select-label">Load file content:</label>
-            <select id="file-select">
-                <option value="">Select a file to load...</option>
-                <option value="static/script.js">static/script.js</option>
-                <option value="static/styles.css">static/styles.css</option>
-                <option value="index.html">index.html</option>
-                <option value="main.py">main.py</option>
-                <option value="test.py">test.py</option>
-            </select>
+            <!-- Add Input Area Button -->
+            <button id="add-input-button">Add Input Area</button>
+            <!-- Input Areas Container -->
+            <div id="input-areas-container">
+                <!-- Input Area -->
+                <div class="input-area">
+                    <!-- File Selection Dropdown -->
+                    <label class="file-select-label">Load file content:</label>
+                    <select class="file-select">
+                        <option value="">Select a file to load...</option>
+                        <option value="static/script.js">static/script.js</option>
+                        <option value="static/styles.css">static/styles.css</option>
+                        <option value="index.html">index.html</option>
+                        <option value="main.py">main.py</option>
+                        <option value="test.py">test.py</option>
+                    </select>
 
-            <!-- Input Textarea -->
-            <textarea id="input" placeholder="Enter your text here..."></textarea>
+                    <!-- Input Textarea -->
+                    <textarea class="input-textarea" placeholder="Enter your text here..."></textarea>
+
+                    <!-- Remove Input Area Button -->
+                    <button class="remove-input-button">Remove Input Area</button>
+                </div>
+            </div>
 
             <!-- Model Selection Dropdown -->
             <select id="model-select">

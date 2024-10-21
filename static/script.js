@@ -1,7 +1,12 @@
 // /home/jack/aaaDEV/static/script.js
 
 async function sendRequest() {
-    const input = document.getElementById('input').value;
+    const textareas = document.querySelectorAll('.input-textarea');
+    let input = '';
+    textareas.forEach(textarea => {
+        input += textarea.value + '\n'; // Add a newline between each textarea's content
+    });
+
     const model = document.getElementById('model-select').value;
     const responseDiv = document.getElementById('response');
     responseDiv.innerHTML = '';
@@ -181,28 +186,118 @@ function copyCodeToClipboard(codeBlock, button) {
         console.error('Failed to copy: ', err);
     });
 }
-// Add event listener to the file selection dropdown
-document.getElementById('file-select').addEventListener('change', function() {
-    const filePath = this.value;
-    if (filePath) {
-        loadFileContent(filePath);
-    } else {
-        // Clear the textarea if no file is selected
-        document.getElementById('input').value = '';
-    }
-});
 
-function loadFileContent(filePath) {
+// Function to add a new input area
+function addInputArea() {
+    const inputAreasContainer = document.getElementById('input-areas-container');
+
+    // Create the input area container
+    const inputArea = document.createElement('div');
+    inputArea.className = 'input-area';
+
+    // Create the file select label
+    const fileSelectLabel = document.createElement('label');
+    fileSelectLabel.className = 'file-select-label';
+    fileSelectLabel.textContent = 'Load file content:';
+
+    // Create the file select dropdown
+    const fileSelect = document.createElement('select');
+    fileSelect.className = 'file-select';
+    // Add options to the select
+    const availableFiles = [
+        '',
+        'static/script.js',
+        'static/styles.css',
+        'index.html',
+        'main.py',
+        'test.py'
+    ];
+    availableFiles.forEach(filePath => {
+        const option = document.createElement('option');
+        option.value = filePath;
+        option.textContent = filePath === '' ? 'Select a file to load...' : filePath;
+        fileSelect.appendChild(option);
+    });
+
+    // Create the input textarea
+    const textarea = document.createElement('textarea');
+    textarea.className = 'input-textarea';
+    textarea.placeholder = 'Enter your text here...';
+
+    // Create the remove input area button
+    const removeButton = document.createElement('button');
+    removeButton.className = 'remove-input-button';
+    removeButton.textContent = 'Remove Input Area';
+
+    // Append elements to input area container
+    inputArea.appendChild(fileSelectLabel);
+    inputArea.appendChild(fileSelect);
+    inputArea.appendChild(textarea);
+    inputArea.appendChild(removeButton);
+
+    // Append the input area to the container
+    inputAreasContainer.appendChild(inputArea);
+
+    // Add event listener to the file select
+    fileSelect.addEventListener('change', function() {
+        const filePath = this.value;
+        if (filePath) {
+            loadFileContentIntoTextarea(filePath, textarea);
+        } else {
+            textarea.value = '';
+        }
+    });
+
+    // Add event listener to the remove button
+    removeButton.addEventListener('click', function() {
+        inputAreasContainer.removeChild(inputArea);
+    });
+}
+
+// Function to load file content into a specific textarea
+function loadFileContentIntoTextarea(filePath, textarea) {
     axios.get('/get_code', {
         params: {
             file_path: filePath
         }
     })
     .then(response => {
-        // Set the content to textarea
-        document.getElementById('input').value = response.data;
+        // Set the content to the textarea
+        textarea.value = response.data;
     })
     .catch(error => {
         alert('Failed to load file: ' + error.response.data);
     });
 }
+
+// On page load, initialize the first input area
+document.addEventListener('DOMContentLoaded', function() {
+    // The first input area is already in the HTML, so just need to attach event listeners
+    const firstInputArea = document.querySelector('.input-area');
+    if (firstInputArea) {
+        const fileSelect = firstInputArea.querySelector('.file-select');
+        const textarea = firstInputArea.querySelector('.input-textarea');
+        const removeButton = firstInputArea.querySelector('.remove-input-button');
+
+        // Add event listener to the file select
+        fileSelect.addEventListener('change', function() {
+            const filePath = this.value;
+            if (filePath) {
+                loadFileContentIntoTextarea(filePath, textarea);
+            } else {
+                textarea.value = '';
+            }
+        });
+
+        // Add event listener to the remove button
+        removeButton.addEventListener('click', function() {
+            const inputAreasContainer = document.getElementById('input-areas-container');
+            inputAreasContainer.removeChild(firstInputArea);
+        });
+    }
+
+    // Add event listener to the 'Add Input Area' button
+    document.getElementById('add-input-button').addEventListener('click', function() {
+        addInputArea();
+    });
+});
