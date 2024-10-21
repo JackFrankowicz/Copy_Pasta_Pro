@@ -38,11 +38,12 @@ main {
 
 /* Input Area */
 .input-area {
-    background-color: #252526;
+    background-color: #1e1e1e;
     padding: 15px;
     border-radius: 5px;
     margin-bottom: 15px;
     position: relative;
+    border: 1px solid #3c3c3c;
 }
 
 /* File Selection Dropdown */
@@ -55,7 +56,7 @@ main {
 select.file-select {
     width: 100%;
     padding: 10px;
-    background-color: #1e1e1e;
+    background-color: #2d2d2d;
     color: #d4d4d4;
     border: 1px solid #3c3c3c;
     border-radius: 5px;
@@ -80,48 +81,38 @@ textarea.input-textarea {
     padding: 10px;
     margin-bottom: 15px;
     font-size: 16px;
+    resize: vertical;
 }
 
-/* Remove Input Area Button */
+/* Input Area Buttons */
+.input-area-buttons {
+    display: flex;
+    justify-content: flex-end;
+}
+
+button.add-input-button,
 button.remove-input-button {
-    display: inline-block;
-    background-color: #d9534f;
+    background-color: #0e639c;
     color: #fff;
     border: none;
-    padding: 6px 12px;
+    padding: 6px 10px;
     font-size: 14px;
     border-radius: 3px;
     cursor: pointer;
+    margin-left: 5px;
     transition: background-color 0.3s;
 }
 
+button.add-input-button:hover,
 button.remove-input-button:hover {
-    background-color: #c9302c;
-}
-
-/* Add Input Area Button */
-button#add-input-button {
-    display: inline-block;
-    background-color: #5cb85c;
-    color: #fff;
-    border: none;
-    padding: 12px 20px;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-bottom: 15px;
-    transition: background-color 0.3s;
-}
-
-button#add-input-button:hover {
-    background-color: #4cae4c;
+    background-color: #1177bb;
 }
 
 /* Model Select Dropdown */
 select#model-select {
     width: 100%;
     padding: 10px;
-    background-color: #1e1e1e;
+    background-color: #2d2d2d;
     color: #d4d4d4;
     border: 1px solid #3c3c3c;
     border-radius: 5px;
@@ -218,12 +209,12 @@ button#submit-button:hover {
 pre {
     background-color: #1e1e1e;
     color: #d4d4d4;
-    padding: 15px;
-    border-radius: 5px;
+    padding: 0; /* Removed extra padding to align with line numbers */
+    margin: 0;
+    border-radius: 0 0 5px 5px;
     overflow-x: auto;
-    margin-bottom: 20px;
-    position: relative;
     font-size: 14px;
+    border-top: 1px solid #3c3c3c;
 }
 
 /* Line Numbers Styling */
@@ -247,33 +238,60 @@ code {
     font-family: 'Courier New', Courier, monospace;
 }
 
-/* Copy Button */
-.copy-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+/* Code Container */
+.code-container {
+    margin-bottom: 20px;
+    border: 1px solid #3c3c3c;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+/* Code Header */
+.code-header {
+    display: flex;
+    align-items: center;
+    background-color: #252526;
+    padding: 8px;
+    border-bottom: 1px solid #3c3c3c;
+}
+
+.code-header .file-select,
+.code-header .custom-file-input {
+    background-color: #2d2d2d;
+    color: #d4d4d4;
+    border: 1px solid #3c3c3c;
+    border-radius: 3px;
+    padding: 5px;
+    margin-right: 10px;
+    font-size: 14px;
+    flex: 1;
+}
+
+.code-header .custom-file-input {
+    display: none;
+}
+
+.code-header .save-button,
+.code-header .copy-button {
     background-color: #0e639c;
     color: #fff;
     border: none;
-    padding: 5px 10px;
-    font-size: 12px;
+    padding: 6px 12px;
+    font-size: 14px;
     border-radius: 3px;
     cursor: pointer;
-    opacity: 0.7;
-    transition: opacity 0.3s;
+    margin-left: 10px;
+    transition: background-color 0.3s;
 }
 
-.copy-button:hover {
-    opacity: 1;
-}
-
-.copy-button:active {
+.code-header .save-button:hover,
+.code-header .copy-button:hover {
     background-color: #1177bb;
 }
 
-/* Code Container */
-.code-container {
-    position: relative;
+/* Push buttons to the right */
+.code-header .save-button {
+    margin-left: auto;
 }
 
 /* Tables */
@@ -320,51 +338,26 @@ code {
     margin-bottom: 20px;
 }
 
-/* Blockquote Styling */
-#response blockquote p {
-    color: #d4d4d4;
+/* Adjust input area file select and buttons */
+.input-area .file-select {
+    width: calc(100% - 20px);
 }
 
-/* Code Header */
-.code-header {
-    display: flex;
-    align-items: center;
-    background-color: #252526;
-    padding: 5px 10px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+/* General Button Styles */
+button {
+    outline: none;
 }
 
-.file-select, .custom-file-input {
-    background-color: #1e1e1e;
-    color: #d4d4d4;
-    border: 1px solid #3c3c3c;
-    border-radius: 3px;
-    padding: 5px;
-    margin-right: 10px;
-    font-size: 14px;
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+    width: 8px;
 }
 
-.save-button {
-    background-color: #0e639c;
-    color: #fff;
-    border: none;
-    padding: 6px 12px;
-    font-size: 14px;
-    border-radius: 3px;
-    cursor: pointer;
-    margin-right: 10px;
-    transition: background-color 0.3s;
+::-webkit-scrollbar-track {
+    background: #1e1e1e;
 }
 
-.save-button:hover {
-    background-color: #1177bb;
-}
-
-/* Adjusted Code Container */
-.code-container {
-    margin-bottom: 20px;
-    border: 1px solid #3c3c3c;
-    border-radius: 5px;
-    overflow: hidden;
+::-webkit-scrollbar-thumb {
+    background-color: #3c3c3c;
+    border-radius: 4px;
 }

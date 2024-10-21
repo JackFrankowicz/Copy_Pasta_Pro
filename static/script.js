@@ -224,16 +224,31 @@ function addInputArea() {
     textarea.className = 'input-textarea';
     textarea.placeholder = 'Enter your text here...';
 
+    // Create the buttons container
+    const buttonsContainer = document.createElement('div');
+    buttonsContainer.className = 'input-area-buttons';
+
+    // Create the add input area button
+    const addButton = document.createElement('button');
+    addButton.className = 'add-input-button';
+    addButton.title = 'Add Input Area';
+    addButton.innerHTML = '<i class="fas fa-plus"></i>';
+
     // Create the remove input area button
     const removeButton = document.createElement('button');
     removeButton.className = 'remove-input-button';
-    removeButton.textContent = 'Remove Input Area';
+    removeButton.title = 'Remove Input Area';
+    removeButton.innerHTML = '<i class="fas fa-minus"></i>';
+
+    // Append buttons to buttons container
+    buttonsContainer.appendChild(addButton);
+    buttonsContainer.appendChild(removeButton);
 
     // Append elements to input area container
     inputArea.appendChild(fileSelectLabel);
     inputArea.appendChild(fileSelect);
     inputArea.appendChild(textarea);
-    inputArea.appendChild(removeButton);
+    inputArea.appendChild(buttonsContainer);
 
     // Append the input area to the container
     inputAreasContainer.appendChild(inputArea);
@@ -246,6 +261,11 @@ function addInputArea() {
         } else {
             textarea.value = '';
         }
+    });
+
+    // Add event listener to the add button
+    addButton.addEventListener('click', function() {
+        addInputArea();
     });
 
     // Add event listener to the remove button
@@ -277,6 +297,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (firstInputArea) {
         const fileSelect = firstInputArea.querySelector('.file-select');
         const textarea = firstInputArea.querySelector('.input-textarea');
+        const addButton = firstInputArea.querySelector('.add-input-button');
         const removeButton = firstInputArea.querySelector('.remove-input-button');
 
         // Add event listener to the file select
@@ -289,15 +310,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
+        // Add event listener to the add button
+        addButton.addEventListener('click', function() {
+            addInputArea();
+        });
+
         // Add event listener to the remove button
         removeButton.addEventListener('click', function() {
             const inputAreasContainer = document.getElementById('input-areas-container');
             inputAreasContainer.removeChild(firstInputArea);
         });
     }
-
-    // Add event listener to the 'Add Input Area' button
-    document.getElementById('add-input-button').addEventListener('click', function() {
-        addInputArea();
-    });
 });

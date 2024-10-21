@@ -1,23 +1,24 @@
+<!-- /home/jack/aaaDEV/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>O1 Model Interface</title>
+    <title>Copy Pasta Pro</title>
     <!-- Custom Stylesheet -->
     <link rel="stylesheet" href="/static/styles.css">
-    <!-- Prism.js CSS for syntax highlighting -->
+    <!-- Prism.js CSS for syntax highlighting (Dark Theme) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <!-- Prism.js Line Numbers CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>O1 Model Interface</h1>
+            <h1>Copy Pasta Pro</h1>
         </header>
         <main>
-            <!-- Add Input Area Button -->
-            <button id="add-input-button">Add Input Area</button>
             <!-- Input Areas Container -->
             <div id="input-areas-container">
                 <!-- Input Area -->
@@ -36,8 +37,13 @@
                     <!-- Input Textarea -->
                     <textarea class="input-textarea" placeholder="Enter your text here..."></textarea>
 
-                    <!-- Remove Input Area Button -->
-                    <button class="remove-input-button">Remove Input Area</button>
+                    <!-- Buttons Container -->
+                    <div class="input-area-buttons">
+                        <!-- Add Input Area Button -->
+                        <button class="add-input-button" title="Add Input Area"><i class="fas fa-plus"></i></button>
+                        <!-- Remove Input Area Button -->
+                        <button class="remove-input-button" title="Remove Input Area"><i class="fas fa-minus"></i></button>
+                    </div>
                 </div>
             </div>
 
@@ -50,7 +56,7 @@
             </select>
 
             <!-- Submit Button -->
-            <button id="submit-button" onclick="sendRequest()">Send Request</button>
+            <button id="submit-button" onclick="sendRequest()">Go to town</button>
 
             <!-- Response Div -->
             <div id="response"></div>
