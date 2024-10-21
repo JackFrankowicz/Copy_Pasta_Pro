@@ -207,17 +207,30 @@ button#submit-button:hover {
     margin: 30px 0;
 }
 
+/* Code Container */
+.code-container {
+    margin-bottom: 20px;
+    border: 1px solid #3c3c3c;
+    border-radius: 5px;
+    overflow: hidden;
+    max-height: none; /* Add this line or ensure it's set appropriately */
+}
+
 /* Code Blocks */
 pre {
     background-color: #1e1e1e;
     color: #d4d4d4;
-    padding: 0; /* Removed extra padding to align with line numbers */
+    padding: 0;
     margin: 0;
     border-radius: 0 0 5px 5px;
     overflow-x: auto;
+    overflow-y: auto;
+    max-height: 400px; /* Set your desired max height */
     font-size: 14px;
     border-top: 1px solid #3c3c3c;
 }
+
+
 
 /* Line Numbers Styling */
 pre.line-numbers {

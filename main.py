@@ -27,7 +27,7 @@ async def o1_stream(request: Request):
         # Read JSON data from the request body
         data = await request.json()
         input_text = data.get('input', '')
-        model = data.get('model', 'gpt-3.5-turbo')  # Updated default model if needed
+        model = data.get('model', 'gpt-4o-mini')  # Updated default model if needed
         logger.info(f"Input text: {input_text}")
         logger.info(f"Model: {model}")
 
