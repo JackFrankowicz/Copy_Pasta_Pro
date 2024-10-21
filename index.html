@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>O1 Model Interface</title>
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="/static/styles.css">
+    <!-- Prism.js CSS for syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <!-- Prism.js Line Numbers CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>O1 Model Interface</h1>
+        </header>
+        <main>
+            <textarea id="input" placeholder="Enter your text here..."></textarea>
+            <select id="model-select">
+                <option value="chatgpt-4o-latest">chatgpt-4o-latest</option>
+                <option value="gpt-4o-mini">gpt-4o-mini</option>
+                <option value="o1-preview" selected>o1-preview</option>
+                <option value="o1-mini">o1-mini</option>
+            </select>
+            <button id="submit-button" onclick="sendRequest()">Send Request</button>
+            <div id="response"></div>
+        </main>
+    </div>
+
+    <!-- Axios for making HTTP requests -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- Marked.js for markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Prism.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <!-- Prism.js Autoloader -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <!-- Prism.js Line Numbers Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <!-- Custom Script -->
+    <script src="/static/script.js"></script>
+</body>
+</html>

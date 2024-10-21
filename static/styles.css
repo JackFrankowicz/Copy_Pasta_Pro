@@ -1,0 +1,258 @@
+/* /home/jack/aaaDEV/static/styles.css */
+
+/* Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Body */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    line-height: 1.6;
+}
+
+/* Container */
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 0 20px;
+}
+
+/* Header */
+header h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #61dafb;
+}
+
+/* Main Content */
+main {
+    background-color: #252526;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+/* Textarea */
+textarea#input {
+    width: 100%;
+    height: 150px;
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    border: 1px solid #3c3c3c;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+/* Model Select Dropdown */
+select#model-select {
+    width: 100%;
+    padding: 10px;
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    border: 1px solid #3c3c3c;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    appearance: none;
+}
+
+select#model-select option {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+}
+
+/* Submit Button */
+button#submit-button {
+    display: inline-block;
+    background-color: #0e639c;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button#submit-button:hover {
+    background-color: #1177bb;
+}
+
+/* Response */
+#response {
+    margin-top: 30px;
+}
+
+/* Loading Message */
+#whoomp {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Completion Message */
+#response > div:first-child {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #61dafb;
+}
+
+/* Markdown Styles */
+#response h1,
+#response h2,
+#response h3,
+#response h4,
+#response h5,
+#response h6 {
+    color: #61dafb;
+    margin-top: 20px;
+}
+
+#response p {
+    margin-bottom: 15px;
+}
+
+#response ul,
+#response ol {
+    margin: 15px 0 15px 40px;
+}
+
+#response li {
+    margin-bottom: 8px;
+}
+
+/* Blockquote */
+#response blockquote {
+    border-left: 5px solid #3c3c3c;
+    padding-left: 15px;
+    color: #9cdcfe;
+    font-style: italic;
+    margin-bottom: 15px;
+}
+
+/* Horizontal Rule */
+#response hr {
+    border: none;
+    border-top: 1px solid #3c3c3c;
+    margin: 30px 0;
+}
+
+/* Code Blocks */
+pre {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    padding: 15px;
+    border-radius: 5px;
+    overflow-x: auto;
+    margin-bottom: 20px;
+    position: relative;
+    font-size: 14px;
+}
+
+/* Line Numbers Styling */
+pre.line-numbers {
+    padding-left: 0;
+}
+
+.line-numbers .line-numbers-rows {
+    border-right: 1px solid #3c3c3c;
+}
+
+.line-numbers-rows > span:before {
+    color: #858585;
+}
+
+/* Inline Code */
+code {
+    background-color: #1e1e1e;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+/* Copy Button */
+.copy-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #0e639c;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.copy-button:hover {
+    opacity: 1;
+}
+
+.copy-button:active {
+    background-color: #1177bb;
+}
+
+/* Code Container */
+.code-container {
+    position: relative;
+}
+
+/* Tables */
+#response table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+#response th,
+#response td {
+    border: 1px solid #3c3c3c;
+    padding: 8px;
+    text-align: left;
+}
+
+#response th {
+    background-color: #252526;
+}
+
+/* Links */
+#response a {
+    color: #569cd6;
+    text-decoration: none;
+}
+
+#response a:hover {
+    text-decoration: underline;
+}
+
+/* Bold and Italics */
+#response strong {
+    font-weight: bold;
+}
+
+#response em {
+    font-style: italic;
+}
+
+/* Images */
+#response img {
+    max-width: 100%;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+/* Blockquote Styling */
+#response blockquote p {
+    color: #d4d4d4;
+}
