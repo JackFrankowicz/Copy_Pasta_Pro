@@ -20,6 +20,7 @@ body {
     padding: 0 20px;
 }
 
+/* Futuristic Title */
 .futuristic-title {
     text-align: center;
     margin-bottom: 30px;
@@ -29,7 +30,6 @@ body {
     letter-spacing: 2px;
     text-transform: uppercase;
 }
-
 
 /* Main Content */
 main {
@@ -48,14 +48,9 @@ main {
     border: 1px solid #3c3c3c;
 }
 
-/* File Selection Dropdown */
-.file-select-label {
-    display: block;
-    margin-bottom: 5px;
-    font-size: 16px;
-}
-
-select.file-select {
+/* File Selection Dropdown and Custom Path Input */
+.file-select,
+.custom-file-input {
     width: 100%;
     padding: 10px;
     background-color: #2d2d2d;
@@ -67,7 +62,7 @@ select.file-select {
     appearance: none;
 }
 
-select.file-select option {
+.select-input option {
     background-color: #1e1e1e;
     color: #d4d4d4;
 }
@@ -200,11 +195,28 @@ button#submit-button:hover {
     margin-bottom: 15px;
 }
 
-/* Horizontal Rule */
-#response hr {
-    border: none;
-    border-top: 1px solid #3c3c3c;
-    margin: 30px 0;
+/* Code Header */
+.code-header {
+    display: flex;
+    align-items: center;
+    background-color: #252526;
+    padding: 5px 10px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+/* Code Header Elements */
+.code-header .file-name,
+.code-header .language {
+    flex: 1;
+    color: #d4d4d4;
+    font-size: 14px;
+}
+
+/* Buttons in Code Header */
+.code-header .button-group {
+    display: flex;
+    align-items: center;
 }
 
 .code-header .save-button,
@@ -212,12 +224,17 @@ button#submit-button:hover {
     background-color: #0e639c;
     color: #fff;
     border: none;
-    padding: 6px 12px;
+    padding: 5px 10px;
     font-size: 14px;
     border-radius: 3px;
     cursor: pointer;
-    margin-left: 10px;
+    margin-left: 5px;
     transition: background-color 0.3s;
+}
+
+.code-header .save-button:hover,
+.code-header .copy-button:hover {
+    background-color: #1177bb;
 }
 
 /* Code Container */
@@ -225,8 +242,6 @@ button#submit-button:hover {
     margin-bottom: 20px;
     border: 1px solid #3c3c3c;
     border-radius: 5px;
-    /* Removed overflow: hidden; */
-    /* Removed max-height: none; */
 }
 
 /* Code Blocks */
@@ -238,10 +253,9 @@ pre {
     border-radius: 0 0 5px 5px;
     overflow-x: auto;
     overflow-y: auto;
-    /* Removed max-height: 400px; */
     font-size: 14px;
     border-top: 1px solid #3c3c3c;
-    resize: vertical; /* Added this line */
+    resize: vertical;
 }
 
 /* Line Numbers Styling */
@@ -309,9 +323,10 @@ code {
     margin-bottom: 20px;
 }
 
-/* Adjust input area file select and buttons */
-.input-area .file-select {
-    width: calc(100% - 20px);
+/* Adjust Input Area File Select and Buttons */
+.input-area .select-input,
+.input-area .custom-path-input {
+    width: 100%;
 }
 
 /* General Button Styles */
