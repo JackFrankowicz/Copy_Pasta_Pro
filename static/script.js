@@ -1,5 +1,12 @@
 // script.js
 
+// Function to format and display the response
+function formatResponse(responseText, responseDiv) {
+    // Implement your formatting logic here
+    // For example, you might parse Markdown or handle special formatting
+    responseDiv.innerHTML += `<pre>${responseText}</pre>`;
+}
+
 // Existing sendRequest function
 async function sendRequest() {
     const textareas = document.querySelectorAll('.input-textarea');
@@ -92,11 +99,6 @@ async function sendRequest() {
         clearInterval(timerInterval);
         responseDiv.textContent = `Error: ${error.message}`;
     }
-}
-
-function formatResponse(responseText, responseDiv) {
-    // Existing function contents remain unchanged
-    // ...
 }
 
 // Function to add a new input area
@@ -214,6 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
         handle: '.drag-handle',
     });
 
+    // Initialize the first input area if it exists
     const firstInputArea = document.querySelector('.input-area');
     if (firstInputArea) {
         const fileSelect = firstInputArea.querySelector('.file-select');
@@ -241,6 +244,10 @@ document.addEventListener('DOMContentLoaded', function() {
             inputAreasContainer.removeChild(firstInputArea);
         });
 
+        const preFilledText = "Return the complete code of the files with suggested edits, do not ask me to insert existing code";
+        textarea.value = preFilledText;
+    } else {
+        // If no input areas exist, add one with pre-filled text
         const preFilledText = "Return the complete code of the files with suggested edits, do not ask me to insert existing code";
         addInputArea(preFilledText);
     }
