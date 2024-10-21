@@ -1,3 +1,4 @@
+// Existing sendRequest function
 async function sendRequest() {
     const textareas = document.querySelectorAll('.input-textarea');
     let input = '';
@@ -78,8 +79,7 @@ async function sendRequest() {
             <p>There it is!...Total time taken: <span>${elapsedTime} seconds</span></p>
             <p>Model used: <span>${model}</span></p>
             <p>Input tokens: <span>${promptTokens}</span> / Output tokens: <span>${completionTokens}</span></p>
-            
-            <p>Damage: <span>$${totalCost.toFixed(4)}</span></p> <!-- Updated to 4 decimals -->
+            <p>Damage: <span>$${totalCost.toFixed(4)}</span></p>
         `;
         responseDiv.appendChild(completionMessage);
 
@@ -159,7 +159,7 @@ function formatResponse(responseText, responseDiv) {
         const saveButton = document.createElement('button');
         saveButton.textContent = 'Save';
         saveButton.className = 'save-button';
-        saveButton.onclick = () => saveCodeToFile(codeBlock, fileSelect, customFileInput);
+        saveButton.onclick = () => saveCodeToFile(codeBlock, fileSelect, customFileInput, saveButton);
 
         // Create the copy button
         const copyButton = document.createElement('button');
@@ -187,7 +187,8 @@ function formatResponse(responseText, responseDiv) {
     Prism.highlightAll();
 }
 
-function saveCodeToFile(codeBlock, fileSelect, customFileInput) {
+// Update the saveCodeToFile function to change the button text to "Saved!" after successful save
+function saveCodeToFile(codeBlock, fileSelect, customFileInput, saveButton) {
     const codeContent = codeBlock.textContent;
     let filePath = fileSelect.value;
     if (filePath === 'custom') {
@@ -206,7 +207,12 @@ function saveCodeToFile(codeBlock, fileSelect, customFileInput) {
         code: codeContent,
         file_path: filePath
     }).then(response => {
-        alert('Code saved successfully!');
+        const originalText = saveButton.textContent;
+        saveButton.textContent = 'Saved!';
+        // Revert the button text back to "Save" after 2 seconds
+        setTimeout(() => {
+            saveButton.textContent = originalText;
+        }, 2000);
     }).catch(error => {
         alert('Failed to save code: ' + error.message);
     });
@@ -226,22 +232,17 @@ function copyCodeToClipboard(codeBlock, button) {
 }
 
 // Function to add a new input area
-function addInputArea() {
+function addInputArea(initialValue = '') { 
     const inputAreasContainer = document.getElementById('input-areas-container');
 
     // Create the input area container
     const inputArea = document.createElement('div');
     inputArea.className = 'input-area';
 
-    // Create the file select label
-    const fileSelectLabel = document.createElement('label');
-    fileSelectLabel.className = 'file-select-label';
-    fileSelectLabel.textContent = 'Load file content:';
-
     // Create the file select dropdown
     const fileSelect = document.createElement('select');
     fileSelect.className = 'file-select';
-    // Add options to the select
+
     const availableFiles = [
         '',
         'static/script.js',
@@ -253,14 +254,15 @@ function addInputArea() {
     availableFiles.forEach(filePath => {
         const option = document.createElement('option');
         option.value = filePath;
-        option.textContent = filePath === '' ? 'Select a file to load...' : filePath;
+        option.textContent = filePath === '' ? 'Insert context...' : filePath;
         fileSelect.appendChild(option);
     });
-
+    
     // Create the input textarea
     const textarea = document.createElement('textarea');
     textarea.className = 'input-textarea';
     textarea.placeholder = 'Enter your text here...';
+    textarea.value = initialValue; // Set initial value if provided
 
     // Create the buttons container
     const buttonsContainer = document.createElement('div');
@@ -283,7 +285,6 @@ function addInputArea() {
     buttonsContainer.appendChild(removeButton);
 
     // Append elements to input area container
-    inputArea.appendChild(fileSelectLabel);
     inputArea.appendChild(fileSelect);
     inputArea.appendChild(textarea);
     inputArea.appendChild(buttonsContainer);
@@ -320,7 +321,6 @@ function loadFileContentIntoTextarea(filePath, textarea) {
         }
     })
     .then(response => {
-        // Set the content to the textarea
         textarea.value = response.data;
     })
     .catch(error => {
@@ -328,9 +328,8 @@ function loadFileContentIntoTextarea(filePath, textarea) {
     });
 }
 
-// On page load, initialize the first input area
+// On page load, initialize the input areas
 document.addEventListener('DOMContentLoaded', function() {
-    // The first input area is already in the HTML, so just need to attach event listeners
     const firstInputArea = document.querySelector('.input-area');
     if (firstInputArea) {
         const fileSelect = firstInputArea.querySelector('.file-select');
@@ -338,7 +337,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const addButton = firstInputArea.querySelector('.add-input-button');
         const removeButton = firstInputArea.querySelector('.remove-input-button');
 
-        // Add event listener to the file select
+        fileSelect.querySelector('option[value=""]').textContent = 'Insert context...';
+
         fileSelect.addEventListener('change', function() {
             const filePath = this.value;
             if (filePath) {
@@ -348,15 +348,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Add event listener to the add button
         addButton.addEventListener('click', function() {
             addInputArea();
         });
 
-        // Add event listener to the remove button
         removeButton.addEventListener('click', function() {
             const inputAreasContainer = document.getElementById('input-areas-container');
             inputAreasContainer.removeChild(firstInputArea);
         });
+
+        const preFilledText = "Return the complete code of the files with suggested edits, do not ask me to insert existing code";
+        addInputArea(preFilledText);
     }
 });
