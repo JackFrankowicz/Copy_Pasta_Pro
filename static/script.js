@@ -1,13 +1,151 @@
 // script.js
 
-// Function to format and display the response
+// Function to format and display the response with Markdown and enhanced code blocks
 function formatResponse(responseText, responseDiv) {
-    // Implement your formatting logic here
-    // For example, you might parse Markdown or handle special formatting
-    responseDiv.innerHTML += `<pre>${responseText}</pre>`;
+    // Convert markdown to HTML using Marked.js
+    const htmlContent = marked.parse(responseText);
+
+    // Create a container for the content
+    const contentDiv = document.createElement('div');
+    contentDiv.innerHTML = htmlContent;
+
+    // Define available files and base directory (adjust as needed)
+    const availableFiles = [
+        'static/script.js',
+        'static/styles.css',
+        'index.html',
+        'main.py',
+        'test.py'
+    ];
+    const baseDirectory = '/home/jack/aaaDEV/';
+
+    // Append copy buttons, file selection, and line numbers to code blocks
+    const codeBlocks = contentDiv.querySelectorAll('pre code');
+    codeBlocks.forEach(codeBlock => {
+        const pre = codeBlock.parentNode;
+        // Add 'line-numbers' class to <pre> element for Prism
+        pre.classList.add('line-numbers');
+
+        // Create the header container for the code block
+        const codeHeader = document.createElement('div');
+        codeHeader.className = 'code-header';
+
+        // Create the file select dropdown
+        const fileSelect = document.createElement('select');
+        fileSelect.className = 'file-select';
+
+        // Add options to the select
+        availableFiles.forEach(filePath => {
+            const option = document.createElement('option');
+            option.value = filePath;
+            option.textContent = filePath;
+            fileSelect.appendChild(option);
+        });
+
+        // Add an option for custom file path
+        const customOption = document.createElement('option');
+        customOption.value = 'custom';
+        customOption.textContent = 'Custom Path...';
+        fileSelect.appendChild(customOption);
+
+        // Create an input field for custom file path
+        const customFileInput = document.createElement('input');
+        customFileInput.type = 'text';
+        customFileInput.placeholder = 'Enter custom file path...';
+        customFileInput.style.display = 'none'; // Hide it initially
+        customFileInput.className = 'custom-file-input';
+
+        // When 'Custom Path...' is selected, show the input field
+        fileSelect.addEventListener('change', () => {
+            if (fileSelect.value === 'custom') {
+                customFileInput.style.display = 'inline-block';
+            } else {
+                customFileInput.style.display = 'none';
+            }
+        });
+
+        // Create the save button
+        const saveButton = document.createElement('button');
+        saveButton.textContent = 'Save';
+        saveButton.className = 'save-button';
+        saveButton.onclick = () => saveCodeToFile(codeBlock, fileSelect, customFileInput, saveButton);
+
+        // Create the copy button
+        const copyButton = document.createElement('button');
+        copyButton.textContent = 'Copy';
+        copyButton.className = 'copy-button';
+        copyButton.onclick = () => copyCodeToClipboard(codeBlock, copyButton);
+
+        // Append elements to the code header
+        codeHeader.appendChild(fileSelect);
+        codeHeader.appendChild(customFileInput);
+        codeHeader.appendChild(saveButton);
+        codeHeader.appendChild(copyButton);
+
+        // Wrap pre and codeHeader in a container
+        const codeContainer = document.createElement('div');
+        codeContainer.className = 'code-container';
+        pre.parentNode.replaceChild(codeContainer, pre);
+        codeContainer.appendChild(codeHeader);
+        codeContainer.appendChild(pre);
+    });
+
+    responseDiv.appendChild(contentDiv);
+
+    // After content is added to the DOM, highlight code blocks
+    Prism.highlightAll();
 }
 
-// Existing sendRequest function
+// Function to save code to a file via backend API
+function saveCodeToFile(codeBlock, fileSelect, customFileInput, saveButton) {
+    const codeContent = codeBlock.textContent;
+    let filePath = fileSelect.value;
+    if (filePath === 'custom') {
+        // Get custom file path from input
+        const customPath = customFileInput.value.trim();
+        if (!customPath) {
+            alert('Please enter a valid file path.');
+            return;
+        }
+        // Ensure the custom path is within the base directory (optional security step)
+        // if (!customPath.startsWith(baseDirectory)) {
+        //     alert('Invalid file path.');
+        //     return;
+        // }
+        filePath = customPath;
+    }
+
+    // Send the code and file path to the backend API
+    axios.post('/save_code', {
+        code: codeContent,
+        file_path: filePath
+    }).then(response => {
+        const originalText = saveButton.textContent;
+        saveButton.textContent = 'Saved!';
+        // Revert the button text back to "Save" after 2 seconds
+        setTimeout(() => {
+            saveButton.textContent = originalText;
+        }, 2000);
+    }).catch(error => {
+        alert('Failed to save code: ' + (error.response?.data || error.message));
+    });
+}
+
+// Function to copy code to clipboard
+function copyCodeToClipboard(codeBlock, button) {
+    const codeText = codeBlock.textContent;
+    navigator.clipboard.writeText(codeText).then(() => {
+        const originalText = button.textContent;
+        button.textContent = 'Copied!';
+        setTimeout(() => {
+            button.textContent = originalText;
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+    });
+}
+
+// Existing sendRequest function with merged functionalities
 async function sendRequest() {
     const textareas = document.querySelectorAll('.input-textarea');
     let input = '';
@@ -97,11 +235,11 @@ async function sendRequest() {
 
     } catch (error) {
         clearInterval(timerInterval);
-        responseDiv.textContent = `Error: ${error.message}`;
+        responseDiv.textContent = `Error: ${error.response?.data || error.message}`;
     }
 }
 
-// Function to add a new input area
+// Function to add a new input area with drag handle
 function addInputArea(initialValue = '') { 
     const inputAreasContainer = document.getElementById('input-areas-container');
 
@@ -181,12 +319,14 @@ function addInputArea(initialValue = '') {
     });
 
     // Add event listener to the add button
-    addButton.addEventListener('click', function() {
+    addButton.addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent form submission or other default actions
         addInputArea();
     });
 
     // Add event listener to the remove button
-    removeButton.addEventListener('click', function() {
+    removeButton.addEventListener('click', function(event) {
+        event.preventDefault();
         inputAreasContainer.removeChild(inputArea);
     });
 }
@@ -202,7 +342,7 @@ function loadFileContentIntoTextarea(filePath, textarea) {
         textarea.value = response.data;
     })
     .catch(error => {
-        alert('Failed to load file: ' + error.response.data);
+        alert('Failed to load file: ' + (error.response?.data || error.message));
     });
 }
 
@@ -210,7 +350,7 @@ function loadFileContentIntoTextarea(filePath, textarea) {
 document.addEventListener('DOMContentLoaded', function() {
     const inputAreasContainer = document.getElementById('input-areas-container');
 
-    // Initialize SortableJS
+    // Initialize SortableJS for draggable input areas
     var sortable = Sortable.create(inputAreasContainer, {
         animation: 150,
         handle: '.drag-handle',
@@ -224,8 +364,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const addButton = firstInputArea.querySelector('.add-input-button');
         const removeButton = firstInputArea.querySelector('.remove-input-button');
 
+        // Update the placeholder option
         fileSelect.querySelector('option[value=""]').textContent = 'Insert context...';
 
+        // Add event listeners
         fileSelect.addEventListener('change', function() {
             const filePath = this.value;
             if (filePath) {
@@ -235,12 +377,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        addButton.addEventListener('click', function() {
+        addButton.addEventListener('click', function(event) {
+            event.preventDefault();
             addInputArea();
         });
 
-        removeButton.addEventListener('click', function() {
-            const inputAreasContainer = document.getElementById('input-areas-container');
+        removeButton.addEventListener('click', function(event) {
+            event.preventDefault();
             inputAreasContainer.removeChild(firstInputArea);
         });
 
