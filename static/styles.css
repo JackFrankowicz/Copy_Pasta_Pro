@@ -212,8 +212,8 @@ button#submit-button:hover {
     margin-bottom: 20px;
     border: 1px solid #3c3c3c;
     border-radius: 5px;
-    overflow: hidden;
-    max-height: none; /* Add this line or ensure it's set appropriately */
+    /* Removed overflow: hidden; */
+    /* Removed max-height: none; */
 }
 
 /* Code Blocks */
@@ -225,12 +225,11 @@ pre {
     border-radius: 0 0 5px 5px;
     overflow-x: auto;
     overflow-y: auto;
-    max-height: 400px; /* Set your desired max height */
+    /* Removed max-height: 400px; */
     font-size: 14px;
     border-top: 1px solid #3c3c3c;
+    resize: vertical; /* Added this line */
 }
-
-
 
 /* Line Numbers Styling */
 pre.line-numbers {
@@ -251,62 +250,6 @@ code {
     padding: 2px 4px;
     border-radius: 3px;
     font-family: 'Courier New', Courier, monospace;
-}
-
-/* Code Container */
-.code-container {
-    margin-bottom: 20px;
-    border: 1px solid #3c3c3c;
-    border-radius: 5px;
-    overflow: hidden;
-}
-
-/* Code Header */
-.code-header {
-    display: flex;
-    align-items: center;
-    background-color: #252526;
-    padding: 8px;
-    border-bottom: 1px solid #3c3c3c;
-}
-
-.code-header .file-select,
-.code-header .custom-file-input {
-    background-color: #2d2d2d;
-    color: #d4d4d4;
-    border: 1px solid #3c3c3c;
-    border-radius: 3px;
-    padding: 5px;
-    margin-right: 10px;
-    font-size: 14px;
-    flex: 1;
-}
-
-.code-header .custom-file-input {
-    display: none;
-}
-
-.code-header .save-button,
-.code-header .copy-button {
-    background-color: #0e639c;
-    color: #fff;
-    border: none;
-    padding: 6px 12px;
-    font-size: 14px;
-    border-radius: 3px;
-    cursor: pointer;
-    margin-left: 10px;
-    transition: background-color 0.3s;
-}
-
-.code-header .save-button:hover,
-.code-header .copy-button:hover {
-    background-color: #1177bb;
-}
-
-/* Push buttons to the right */
-.code-header .save-button {
-    margin-left: auto;
 }
 
 /* Tables */
