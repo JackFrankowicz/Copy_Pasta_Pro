@@ -213,6 +213,27 @@ button#submit-button:hover {
     font-size: 14px;
 }
 
+/* Adjusted File Select and Custom Path Input in Code Header */
+.code-header .file-select,
+.code-header .custom-file-input {
+    width: auto;
+    flex: 1;
+    padding: 10px;
+    background-color: #2d2d2d;
+    color: #d4d4d4;
+    border: 1px solid #3c3c3c;
+    border-radius: 5px;
+    margin-bottom: 0;
+    font-size: 16px;
+    appearance: none;
+    display: flex;
+    align-items: center;
+}
+
+.code-header .custom-file-input {
+    margin-left: 10px; /* Adds small space between file-select and custom-file-input */
+}
+
 /* Buttons in Code Header */
 .code-header .button-group {
     display: flex;
@@ -224,7 +245,7 @@ button#submit-button:hover {
     background-color: #0e639c;
     color: #fff;
     border: none;
-    padding: 5px 10px;
+    padding: 10px 10px; /* Adjusted padding for better alignment */
     font-size: 14px;
     border-radius: 3px;
     cursor: pointer;
