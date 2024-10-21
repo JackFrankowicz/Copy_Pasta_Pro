@@ -1,11 +1,11 @@
-# /home/jack/aaaDEV/main.py
-
 import logging
 import os
 from fastapi import FastAPI, Request, Query
-from fastapi.responses import PlainTextResponse, HTMLResponse
+from fastapi.responses import JSONResponse, PlainTextResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from openai import OpenAI
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))  # Correct import for OpenAI
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -13,8 +13,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 
 app = FastAPI()
 
-# Initialize OpenAI client
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Initialize OpenAI API key
 
 @app.post("/api/o1")
 async def o1_stream(request: Request):
@@ -28,25 +27,34 @@ async def o1_stream(request: Request):
         # Read JSON data from the request body
         data = await request.json()
         input_text = data.get('input', '')
-        model = data.get('model', 'o1-preview')
+        model = data.get('model', 'gpt-3.5-turbo')  # Updated default model if needed
         logger.info(f"Input text: {input_text}")
         logger.info(f"Model: {model}")
 
         # Create a message structure for OpenAI API
         messages = [{"role": "user", "content": input_text}]
 
-        # Send the request to the OpenAI API to generate a completion
-        response = client.chat.completions.create(
-            model=model,  # Use the selected model
-            messages=messages
-        )
+        # Use OpenAI ChatCompletion API
+        response = client.chat.completions.create(model=model,  # Use the selected model
+        messages=messages)
         logger.info(f"Full API response: {response}")
 
-        # Extract and return the content as is
+        # Extract content and token usage
         content = response.choices[0].message.content
+        prompt_tokens = response.usage.prompt_tokens
+        completion_tokens = response.usage.completion_tokens
+        total_tokens = response.usage.total_tokens
+        logger.info(f"Prompt tokens: {prompt_tokens}")
+        logger.info(f"Completion tokens: {completion_tokens}")
+        logger.info(f"Total tokens used: {total_tokens}")
 
-        # Return the content as plain text
-        return PlainTextResponse(content=content)
+        # Return the content and token counts as JSON
+        return JSONResponse(content={
+            "content": content,
+            "prompt_tokens": prompt_tokens,
+            "completion_tokens": completion_tokens,
+            "total_tokens": total_tokens
+        })
 
     except Exception as error:
         logger.error(f"Error in o1_stream: {error}")
@@ -112,7 +120,6 @@ async def get_code(file_path: str = Query(..., description="Path of the file to 
     except Exception as e:
         logger.error(f"Error reading file {file_path}: {str(e)}")
         return PlainTextResponse(content=f"Error reading file: {str(e)}", status_code=500)
-
 
 @app.get("/")
 async def read_root():

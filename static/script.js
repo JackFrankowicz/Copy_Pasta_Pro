@@ -1,5 +1,3 @@
-// /home/jack/aaaDEV/static/script.js
-
 async function sendRequest() {
     const textareas = document.querySelectorAll('.input-textarea');
     let input = '';
@@ -39,14 +37,27 @@ async function sendRequest() {
         const endTime = Date.now();
         const elapsedTime = ((endTime - startTime) / 1000).toFixed(2);
 
-        // Display "There it is!" message at the top
+        // Extract content and token usage from response
+        const content = response.data.content;
+        const promptTokens = response.data.prompt_tokens;
+        const completionTokens = response.data.completion_tokens;
+        const totalTokens = response.data.total_tokens;
+
+        // Display "There it is!" message at the top with detailed token info
         responseDiv.innerHTML = '';
         const completionMessage = document.createElement('div');
-        completionMessage.innerHTML = `There it is! Total time taken: <span>(${elapsedTime} seconds)</span>`;
+        completionMessage.innerHTML = `
+            <p>There it is!</p>
+            <p>Model used: <span>${model}</span></p>
+            <p>Input tokens used: <span>${promptTokens}</span></p>
+            <p>Output tokens used: <span>${completionTokens}</span></p>
+            <p>Total tokens used: <span>${totalTokens}</span></p>
+            <p>Total time taken: <span>${elapsedTime} seconds</span></p>
+        `;
         responseDiv.appendChild(completionMessage);
 
         // Format and display the response
-        formatResponse(response.data, responseDiv);
+        formatResponse(content, responseDiv);
 
     } catch (error) {
         clearInterval(timerInterval);
