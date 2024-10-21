@@ -1,0 +1,19 @@
+# Python files
+*.pyc
+__pycache__/
+
+# Virtual environment
+venv/
+.env
+
+# MacOS specific
+.DS_Store
+
+# Logs
+*.log
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# VSCode settings
+.vscode/
