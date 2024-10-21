@@ -181,3 +181,28 @@ function copyCodeToClipboard(codeBlock, button) {
         console.error('Failed to copy: ', err);
     });
 }
+// Add event listener to the file selection dropdown
+document.getElementById('file-select').addEventListener('change', function() {
+    const filePath = this.value;
+    if (filePath) {
+        loadFileContent(filePath);
+    } else {
+        // Clear the textarea if no file is selected
+        document.getElementById('input').value = '';
+    }
+});
+
+function loadFileContent(filePath) {
+    axios.get('/get_code', {
+        params: {
+            file_path: filePath
+        }
+    })
+    .then(response => {
+        // Set the content to textarea
+        document.getElementById('input').value = response.data;
+    })
+    .catch(error => {
+        alert('Failed to load file: ' + error.response.data);
+    });
+}

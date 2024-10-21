@@ -16,18 +16,37 @@
             <h1>O1 Model Interface</h1>
         </header>
         <main>
+            <!-- File Selection Dropdown -->
+            <label for="file-select" class="file-select-label">Load file content:</label>
+            <select id="file-select">
+                <option value="">Select a file to load...</option>
+                <option value="static/script.js">static/script.js</option>
+                <option value="static/styles.css">static/styles.css</option>
+                <option value="index.html">index.html</option>
+                <option value="main.py">main.py</option>
+                <option value="test.py">test.py</option>
+            </select>
+
+            <!-- Input Textarea -->
             <textarea id="input" placeholder="Enter your text here..."></textarea>
+
+            <!-- Model Selection Dropdown -->
             <select id="model-select">
                 <option value="chatgpt-4o-latest">chatgpt-4o-latest</option>
                 <option value="gpt-4o-mini">gpt-4o-mini</option>
                 <option value="o1-preview" selected>o1-preview</option>
                 <option value="o1-mini">o1-mini</option>
             </select>
+
+            <!-- Submit Button -->
             <button id="submit-button" onclick="sendRequest()">Send Request</button>
+
+            <!-- Response Div -->
             <div id="response"></div>
         </main>
     </div>
 
+    <!-- Include Scripts -->
     <!-- Axios for making HTTP requests -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <!-- Marked.js for markdown parsing -->

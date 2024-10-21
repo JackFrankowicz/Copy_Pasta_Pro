@@ -299,3 +299,27 @@ code {
     border-radius: 5px;
     overflow: hidden;
 }
+/* Label for File Selection Dropdown */
+.file-select-label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 16px;
+}
+
+/* File Selection Dropdown Styles */
+select#file-select {
+    width: 100%;
+    padding: 10px;
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    border: 1px solid #3c3c3c;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    appearance: none;
+}
+
+select#file-select option {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+}
