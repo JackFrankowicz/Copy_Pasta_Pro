@@ -20,12 +20,16 @@ body {
     padding: 0 20px;
 }
 
-/* Header */
-header h1 {
+.futuristic-title {
     text-align: center;
     margin-bottom: 30px;
     color: #61dafb;
+    font-family: 'Audiowide', sans-serif;
+    font-size: 3em;
+    letter-spacing: 2px;
+    text-transform: uppercase;
 }
+
 
 /* Main Content */
 main {
