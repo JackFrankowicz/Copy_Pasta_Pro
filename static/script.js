@@ -45,7 +45,7 @@ async function sendRequest() {
 
         // Pricing per million tokens for each model
         const pricing = {
-            'gpt-4o': {
+            'chatgpt-4o-latest': {
                 input: 2.50 / 1000000,
                 output: 10.00 / 1000000
             },
