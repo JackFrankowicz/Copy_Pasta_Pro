@@ -75,11 +75,11 @@ async function sendRequest() {
         responseDiv.innerHTML = '';
         const completionMessage = document.createElement('div');
         completionMessage.innerHTML = `
-            <p>There it is!</p>
+            <p>There it is!...Total time taken: <span>${elapsedTime} seconds</span></p>
             <p>Model used: <span>${model}</span></p>
             <p>Input tokens: <span>${promptTokens}</span> / Output tokens: <span>${completionTokens}</span></p>
-            <p>Total time taken: <span>${elapsedTime} seconds</span></p>
-            <p>Total cost: <span>$${totalCost.toFixed(4)}</span></p> <!-- Updated to 4 decimals -->
+            
+            <p>Damage: <span>$${totalCost.toFixed(4)}</span></p> <!-- Updated to 4 decimals -->
         `;
         responseDiv.appendChild(completionMessage);
 
