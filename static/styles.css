@@ -18,9 +18,7 @@ body {
     max-width: 800px;
     margin: 50px auto;
     padding: 0 20px;
-    
 }
-
 
 /* Futuristic Title */
 .futuristic-title {
@@ -38,28 +36,49 @@ main {
     background-color: #252526;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0px 0px 0px 2px rgba(97, 218, 251, 0.5), 
-            0px 2px 4px rgba(97, 218, 251, 0.5),
-            0px 4px 8px rgba(97, 218, 251, 0.5),
-            0px 8px 16px rgba(97, 218, 251, 0.5);
-   
+    box-shadow: 
+        0px 0px 0px 2px rgba(97, 218, 251, 0.5),
+        0px 2px 4px rgba(97, 218, 251, 0.5),
+        0px 4px 8px rgba(97, 218, 251, 0.5),
+        0px 8px 16px rgba(97, 218, 251, 0.5);
 }
 
 /* Input Area */
 .input-area {
+    position: relative; /* For positioning the drag handle */
     background-color: #1e1e1e;
-    padding: 15px;
+    padding: 30px 15px 15px 15px; /* top, right, bottom, left */
     border-radius: 5px;
     margin-bottom: 15px;
-    position: relative;
     border: 1px solid #3c3c3c;
 }
 
-/* File Selection Dropdown and Custom Path Input */
+/* Drag Handle */
+.drag-handle {
+    cursor: grab; /* Open hand */
+    color: #adb5bd;
+    position: absolute;
+    top: 3px;
+    right: 10px;
+    font-size: 15px;
+}
+
+.drag-handle:hover {
+    color: #6c757d;
+}
+
+.drag-handle:active {
+    cursor: grabbing; /* Closed hand when grabbing */
+    color: #495057;
+}
+
+/* File Selection and Custom Path Input */
+.select-input,
+.custom-path-input,
 .file-select,
 .custom-file-input {
     width: 100%;
-    padding: 10px;
+    padding: 8px;
     background-color: #2d2d2d;
     color: #d4d4d4;
     border: 1px solid #3c3c3c;
@@ -69,7 +88,8 @@ main {
     appearance: none;
 }
 
-.select-input option {
+.select-input option,
+.file-select option {
     background-color: #1e1e1e;
     color: #d4d4d4;
 }
@@ -115,7 +135,7 @@ button.remove-input-button:hover {
 /* Model Select Dropdown */
 select#model-select {
     width: 100%;
-    padding: 10px;
+    padding: 8px;
     background-color: #2d2d2d;
     color: #d4d4d4;
     border: 1px solid #3c3c3c;
@@ -207,7 +227,8 @@ button#submit-button:hover {
     display: flex;
     align-items: center;
     background-color: #252526;
-    padding: 5px 10px;
+    padding: 10px;
+    padding-bottom: 5px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
 }
@@ -220,21 +241,19 @@ button#submit-button:hover {
     font-size: 14px;
 }
 
-/* Adjusted File Select and Custom Path Input in Code Header */
+/* File Select and Custom Path Input in Code Header */
 .code-header .file-select,
 .code-header .custom-file-input {
     width: auto;
     flex: 1;
-    padding: 10px;
+    padding: 8px;
     background-color: #2d2d2d;
     color: #d4d4d4;
     border: 1px solid #3c3c3c;
     border-radius: 5px;
-    margin-bottom: 0;
     font-size: 16px;
     appearance: none;
-    display: flex;
-    align-items: center;
+    margin-bottom: 0;
 }
 
 .code-header .custom-file-input {
@@ -252,7 +271,7 @@ button#submit-button:hover {
     background-color: #0e639c;
     color: #fff;
     border: none;
-    padding: 10px 10px; /* Adjusted padding for better alignment */
+    padding: 10px;
     font-size: 14px;
     border-radius: 3px;
     cursor: pointer;
@@ -351,12 +370,6 @@ code {
     margin-bottom: 20px;
 }
 
-/* Adjust Input Area File Select and Buttons */
-.input-area .select-input,
-.input-area .custom-path-input {
-    width: 100%;
-}
-
 /* General Button Styles */
 button {
     outline: none;
@@ -375,44 +388,3 @@ button {
     background-color: #3c3c3c;
     border-radius: 4px;
 }
-
-/* Input Area */
-.input-area {
-    position: relative; /* Add this to position the drag handle */
-    background-color: #1e1e1e;
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    border: 1px solid #3c3c3c;
-}
-
-
-/* CSS for the drag handle */
-.drag-handle {
-    cursor: grab; /* Open hand */
-    color: #adb5bd;
-
-    position: absolute;
-    top: 3px;
-    right: 10px;
-    color: #d4d4d4;
-    font-size: 15px;
-}
-
-.drag-handle:hover {
-    color: #6c757d;
-}
-
-.drag-handle:active {
-    cursor: grabbing; /* Closed hand when grabbing */
-    color: #495057;
-}
-
-
-
-
-/* Adjust padding-top if necessary to avoid overlap */
-.input-area {
-    padding-top: 30px; /* Adjust based on the size of the drag handle */
-}
-
