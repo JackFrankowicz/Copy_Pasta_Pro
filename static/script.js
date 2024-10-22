@@ -1,5 +1,3 @@
-// script.js
-
 // Function to format and display the response with Markdown and enhanced code blocks
 function formatResponse(responseText, responseDiv) {
     // Convert markdown to HTML using Marked.js

@@ -156,7 +156,7 @@ button#submit-button {
     background-color: #0e639c;
     color: #fff;
     border: none;
-    padding: 12px 20px;
+    padding: 8px 20px;
     font-size: 16px;
     border-radius: 5px;
     cursor: pointer;
@@ -303,6 +303,7 @@ pre {
     font-size: 14px;
     border-top: 1px solid #3c3c3c;
     resize: vertical;
+    max-height: 500px; /* Added maximum height */
 }
 
 /* Line Numbers Styling */
