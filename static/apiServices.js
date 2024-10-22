@@ -1,9 +1,11 @@
 // apiServices.js
 
 // Function to save code to a file via backend API
-export async function saveCodeToFile(codeBlock, fileSelect, customFileInput, saveButton) {
+export async function saveCodeToFile(codeBlock, fileSelect, customFileInput, saveButton, directoryInput = null) {
   const codeContent = codeBlock.textContent;
   let filePath = fileSelect.value;
+
+  // If the user chooses to input a custom file path
   if (filePath === 'custom') {
     const customPath = customFileInput.value.trim();
     if (!customPath) {
@@ -11,6 +13,13 @@ export async function saveCodeToFile(codeBlock, fileSelect, customFileInput, sav
       return;
     }
     filePath = customPath;
+  }
+
+  // If a directory input is provided, append it to the base directory and file path
+  if (directoryInput && directoryInput.value.trim()) {
+    const directoryPath = directoryInput.value.trim();
+    // Always append directoryPath to the base directory
+    filePath = `${directoryPath}/${filePath}`; 
   }
 
   try {
