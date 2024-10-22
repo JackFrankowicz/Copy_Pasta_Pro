@@ -1,85 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <!-- fonts for title -->
-    <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
-    <title>Copy Pasta Pro</title>
-    <!-- Custom Stylesheet -->
-    <link rel="stylesheet" href="/static/styles.css">
-    <!-- Prism.js CSS for syntax highlighting (Dark Theme) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-    <!-- Prism.js Line Numbers CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
-    <!-- FontAwesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <!-- Fonts for title -->
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet" />
+  <title>Copy Pasta Pro</title>
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="/static/styles.css" />
+  <!-- Prism.js CSS for syntax highlighting (Dark Theme) -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+  />
+  <!-- Prism.js Line Numbers CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css"
+  />
+  <!-- FontAwesome for icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1 class="futuristic-title">Copy Pasta Pro</h1>
-        </header>
-        <main>
-            <!-- Input Areas Container -->
-            <div id="input-areas-container">
-                <!-- Input Area -->
-                <div class="input-area">
-                    <!-- File Selection Dropdown -->
-                    <select class="file-select">
-                        <option value="">Insert context...</option>
-                        <option value="static/script.js">static/script.js</option>
-                        <option value="static/styles.css">static/styles.css</option>
-                        <option value="index.html">index.html</option>
-                        <option value="main.py">main.py</option>
-                        <option value="test.py">test.py</option>
-                    </select>
+  <div class="container">
+    <header>
+      <h1 class="futuristic-title">Copy Pasta Pro</h1>
+    </header>
+    <main>
+      <!-- Input Areas Container -->
+      <div id="input-areas-container">
+        <!-- Input Area -->
+        <div class="input-area">
+          <!-- Drag Handle -->
+          <span class="drag-handle"><i class="fas fa-grip-lines"></i></span>
 
-                    <!-- Input Textarea -->
-                    <textarea class="input-textarea" placeholder="Enter your text here..."></textarea>
+          <!-- File Selection Dropdown -->
+          <select class="file-select">
+            <option value="">Insert context...</option>
+            <option value="static/script.js">static/script.js</option>
+            <option value="static/styles.css">static/styles.css</option>
+            <option value="index.html">index.html</option>
+            <option value="main.py">main.py</option>
+            <option value="test.py">test.py</option>
+          </select>
 
-                    <!-- Buttons Container -->
-                    <div class="input-area-buttons">
-                        <!-- Add Input Area Button -->
-                        <button class="add-input-button" title="Add Input Area"><i class="fas fa-plus"></i></button>
-                        <!-- Remove Input Area Button -->
-                        <button class="remove-input-button" title="Remove Input Area"><i class="fas fa-minus"></i></button>
-                    </div>
-                </div>
-            </div>
+          <!-- Input Textarea -->
+          <textarea class="input-textarea" placeholder="Enter your text here...">Return the complete code of the files with suggested edits, do not ask me to insert existing code</textarea>
 
-            <!-- Model Selection Dropdown -->
-            <select id="model-select">
-                <option value="chatgpt-4o-latest">chatgpt-4o-latest</option>
-                <option value="gpt-4o-mini">gpt-4o-mini</option>
-                <option value="o1-preview" selected>o1-preview</option>
-                <option value="o1-mini">o1-mini</option>
-            </select>
+          <!-- Buttons Container -->
+          <div class="input-area-buttons">
+            <!-- Add Input Area Button -->
+            <button class="add-input-button" title="Add Input Area">
+              <i class="fas fa-plus"></i>
+            </button>
+            <!-- Remove Input Area Button -->
+            <button class="remove-input-button" title="Remove Input Area">
+              <i class="fas fa-minus"></i>
+            </button>
+          </div>
+        </div>
+      </div>
 
-            <!-- Submit Button -->
-            <button id="submit-button" onclick="sendRequest()">Go to town</button>
+      <!-- Model Selection Dropdown -->
+      <select id="model-select">
+        <option value="chatgpt-4o-latest">chatgpt-4o-latest</option>
+        <option value="gpt-4o-mini">gpt-4o-mini</option>
+        <option value="o1-preview" selected>o1-preview</option>
+        <option value="o1-mini">o1-mini</option>
+      </select>
 
-            <!-- Response Div -->
-            <div id="response"></div>
-        </main>
-    </div>
+      <!-- Submit Button -->
+      <button id="submit-button">Go to town</button>
 
-<!-- Include Scripts -->
-<!-- Axios for making HTTP requests -->
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<!-- Marked.js for markdown parsing -->
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<!-- Prism.js for syntax highlighting -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
-<!-- Prism.js Autoloader -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-<!-- Prism.js Line Numbers Plugin -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
-<!-- SortableJS for drag-and-drop reordering -->
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-<!-- FontAwesome for icons -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-<!-- Custom Script -->
-<script src="/static/script.js"></script>
+      <!-- Response Div -->
+      <div id="response"></div>
+    </main>
+  </div>
 
+  <!-- Include Scripts -->
+  <!-- Axios for making HTTP requests -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <!-- Marked.js for markdown parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- Prism.js for syntax highlighting -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+  <!-- Prism.js Autoloader -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+  <!-- Prism.js Line Numbers Plugin -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+  <!-- SortableJS for drag-and-drop reordering -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+  <!-- FontAwesome for icons -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+  <!-- Custom Scripts -->
+  <script type="module">
+    import { formatResponse, copyCodeToClipboard } from '/static/uiComponents.js';
+    import { saveCodeToFile, sendRequest, loadFileContentIntoTextarea } from '/static/apiServices.js';
+    import { addInputArea } from '/static/inputManager.js';
+
+    // Make functions available globally if needed
+    window.formatResponse = formatResponse;
+    window.copyCodeToClipboard = copyCodeToClipboard;
+    window.saveCodeToFile = saveCodeToFile;
+    window.sendRequest = sendRequest;
+    window.loadFileContentIntoTextarea = loadFileContentIntoTextarea;
+    window.addInputArea = addInputArea;
+
+    // Initialize the application
+    import '/static/init.js';
+  </script>
 </body>
 </html>
