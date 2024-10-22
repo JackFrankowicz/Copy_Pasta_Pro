@@ -37,17 +37,17 @@ main {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 
-        0px 0px 0px 2px rgba(97, 218, 251, 0.5),
-        0px 2px 4px rgba(97, 218, 251, 0.5),
-        0px 4px 8px rgba(97, 218, 251, 0.5),
-        0px 8px 16px rgba(97, 218, 251, 0.5);
+        0 0 0 2px rgba(97, 218, 251, 0.5),
+        0 2px 4px rgba(97, 218, 251, 0.5),
+        0 4px 8px rgba(97, 218, 251, 0.5),
+        0 8px 16px rgba(97, 218, 251, 0.5);
 }
 
 /* Input Area */
 .input-area {
-    position: relative; /* For positioning the drag handle */
+    position: relative;
     background-color: #1e1e1e;
-    padding: 30px 15px 15px 15px; /* top, right, bottom, left */
+    padding: 30px 15px 15px;
     border-radius: 5px;
     margin-bottom: 15px;
     border: 1px solid #3c3c3c;
@@ -55,12 +55,13 @@ main {
 
 /* Drag Handle */
 .drag-handle {
-    cursor: grab; /* Open hand */
+    cursor: grab;
     color: #adb5bd;
     position: absolute;
     top: 3px;
     right: 10px;
     font-size: 15px;
+    transition: color 0.3s, cursor 0.3s;
 }
 
 .drag-handle:hover {
@@ -68,15 +69,16 @@ main {
 }
 
 .drag-handle:active {
-    cursor: grabbing; /* Closed hand when grabbing */
+    cursor: grabbing;
     color: #495057;
 }
 
-/* File Selection and Custom Path Input */
+/* Select and Input Fields */
 .select-input,
 .custom-path-input,
 .file-select,
-.custom-file-input {
+.custom-file-input,
+select#model-select {
     width: 100%;
     padding: 8px;
     background-color: #2d2d2d;
@@ -112,59 +114,48 @@ textarea.input-textarea {
 .input-area-buttons {
     display: flex;
     justify-content: flex-end;
+    gap: 10px; /* Added gap for spacing between buttons */
 }
 
-button.add-input-button,
-button.remove-input-button {
+/* Buttons */
+button,
+.code-header .save-button,
+.code-header .copy-button {
     background-color: #0e639c;
     color: #fff;
     border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover,
+.code-header .save-button:hover,
+.code-header .copy-button:hover {
+    background-color: #1177bb;
+}
+
+/* Specific Button Styles */
+button.add-input-button,
+button.remove-input-button {
     padding: 6px 10px;
     font-size: 14px;
     border-radius: 3px;
-    cursor: pointer;
-    margin-left: 5px;
-    transition: background-color 0.3s;
+    /* Removed margin-left: 5px; */
 }
 
-button.add-input-button:hover,
-button.remove-input-button:hover {
-    background-color: #1177bb;
-}
-
-/* Model Select Dropdown */
-select#model-select {
-    width: 100%;
-    padding: 8px;
-    background-color: #2d2d2d;
-    color: #d4d4d4;
-    border: 1px solid #3c3c3c;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    font-size: 16px;
-    appearance: none;
-}
-
-select#model-select option {
-    background-color: #1e1e1e;
-    color: #d4d4d4;
-}
-
-/* Submit Button */
-button#submit-button {
-    display: inline-block;
-    background-color: #0e639c;
-    color: #fff;
-    border: none;
+button#submit-button,
+button#copy-all-button {
     padding: 8px 20px;
     font-size: 16px;
     border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
 }
 
-button#submit-button:hover {
-    background-color: #1177bb;
+/* Button Container with Flexbox Gap */
+.button-container {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px; /* Added gap for spacing between buttons */
+    margin-bottom: 20px;
 }
 
 /* Response */
@@ -172,7 +163,6 @@ button#submit-button:hover {
     margin-top: 30px;
 }
 
-/* Loading Message */
 #whoomp {
     font-size: 18px;
     font-weight: bold;
@@ -180,7 +170,6 @@ button#submit-button:hover {
     margin-bottom: 20px;
 }
 
-/* Completion Message */
 #response > div:first-child {
     font-size: 18px;
     font-weight: bold;
@@ -229,11 +218,11 @@ button#submit-button:hover {
     background-color: #252526;
     padding: 10px;
     padding-bottom: 5px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+    border-radius: 5px 5px 0 0;
+    gap: 10px; /* Added gap for spacing between elements */
+    flex-wrap: wrap; /* Allows wrapping on smaller screens */
 }
 
-/* Code Header Elements */
 .code-header .file-name,
 .code-header .language {
     flex: 1;
@@ -241,7 +230,6 @@ button#submit-button:hover {
     font-size: 14px;
 }
 
-/* File Select and Custom Path Input in Code Header */
 .code-header .file-select,
 .code-header .custom-file-input {
     width: auto;
@@ -257,32 +245,19 @@ button#submit-button:hover {
 }
 
 .code-header .custom-file-input {
-    margin-left: 10px; /* Adds small space between file-select and custom-file-input */
+    /* Reduced margin-left from 10px to 5px for tighter spacing */
+    margin-left: 5px;
 }
 
-/* Buttons in Code Header */
-.code-header .button-group {
-    display: flex;
-    align-items: center;
-}
-
+/* Save and Copy Buttons within Code Header */
 .code-header .save-button,
 .code-header .copy-button {
-    background-color: #0e639c;
-    color: #fff;
-    border: none;
-    padding: 10px;
+    padding: 8px 12px;
     font-size: 14px;
     border-radius: 3px;
-    cursor: pointer;
-    margin-left: 5px;
-    transition: background-color 0.3s;
+    /* Removed any previous gap-related properties */
 }
 
-.code-header .save-button:hover,
-.code-header .copy-button:hover {
-    background-color: #1177bb;
-}
 
 /* Code Container */
 .code-container {
@@ -303,10 +278,9 @@ pre {
     font-size: 14px;
     border-top: 1px solid #3c3c3c;
     resize: vertical;
-    max-height: 500px; /* Added maximum height */
+    max-height: 500px;
 }
 
-/* Line Numbers Styling */
 pre.line-numbers {
     padding-left: 0;
 }

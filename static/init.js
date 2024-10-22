@@ -1,8 +1,7 @@
 // init.js
 
 import { addInputArea } from './inputManager.js';
-import { loadFileContentIntoTextarea } from './apiServices.js';
-import { sendRequest } from './apiServices.js';
+import { loadFileContentIntoTextarea, sendRequest } from './apiServices.js';
 
 document.addEventListener('DOMContentLoaded', function () {
   const inputAreasContainer = document.getElementById('input-areas-container');
@@ -55,4 +54,33 @@ document.addEventListener('DOMContentLoaded', function () {
   // Attach event listener to submit button
   const submitButton = document.getElementById('submit-button');
   submitButton.addEventListener('click', sendRequest);
+
+  // Attach event listener to copy all text button
+  const copyAllButton = document.getElementById('copy-all-button');
+  copyAllButton.addEventListener('click', copyAllText);
 });
+
+function copyAllText() {
+  const textareas = document.querySelectorAll('.input-textarea');
+  let combinedText = '';
+  textareas.forEach((textarea) => {
+    if (textarea.value.trim() !== '') {
+      combinedText += textarea.value + '\n';
+    }
+  });
+
+  const copyAllButton = document.getElementById('copy-all-button');
+
+  navigator.clipboard.writeText(combinedText).then(() => {
+    // Provide feedback to the user
+    const originalText = copyAllButton.textContent;
+    copyAllButton.textContent = 'Copied!';
+    copyAllButton.disabled = true;
+    setTimeout(() => {
+      copyAllButton.textContent = originalText;
+      copyAllButton.disabled = false;
+    }, 2000);
+  }).catch((err) => {
+    console.error('Failed to copy text: ', err);
+  });
+}
