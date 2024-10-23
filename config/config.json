@@ -1,11 +1,4 @@
 {
-  "baseDirectory": "/home/jack/aaa",
-  "predefinedFiles": [
-    "/home/jack/aaaDEV/main.py",
-    "/home/jack/aaaDEV/requirements.txt",
-    "/home/jack/aaaDEV/settings.html",
-    "/home/jack/aaa/new.js",
-    "/home/jack/aaa/new",
-    "/home/jack/aaa/static/styles.css"
-  ]
+  "baseDirectory": "/home/jack/aaaDEV",
+  "predefinedFiles": []
 }

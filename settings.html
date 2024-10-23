@@ -16,9 +16,10 @@
             padding-left: 20px;
             cursor: pointer;
             color: #d4d4d4;
+            margin-bottom: 5px;
         }
         .item-label {
-            margin-left: 8px;
+            margin-left: 3px;
         }
         .directory-item:hover, .file-item:hover {
             background-color: #333;
@@ -33,7 +34,6 @@
             color: #d4d4d4;
             border: 1px solid #3c3c3c;
             border-radius: 5px;
-            margin-bottom: 15px;
             font-size: 16px;
         }
         .browse-button {
@@ -64,25 +64,30 @@
             height: 24px;
         }
         .buttons-container {
-            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
         }
         .select-button {
             padding: 6px 15px;
             font-size: 14px;
             border-radius: 5px;
-            background-color: #555;
+            background-color: #0e639c;
             color: #fff;
             border: none;
             cursor: pointer;
-            margin-right: 10px;
         }
         .select-button:hover {
-            background-color: #777;
+            background-color: #1177bb;
         }
         #current-path {
             margin-top: 15px;
+            margin-bottom: 10px;
             color: #d4d4d4;
             font-size: 16px;
+            display: flex;
+            align-items: center;
         }
         #current-path span {
             cursor: pointer;
@@ -102,13 +107,15 @@
                 <input type="text" id="base-directory" class="path-input" placeholder="Enter base directory path">
                 <button id="browse-button" class="browse-button">Browse</button>
             </div>
-            <div id="current-path"></div>
-            <div id="directory-contents"></div>
-            <div class="buttons-container">
-                <button id="select-all-button" class="select-button">Select All</button>
-                <button id="deselect-all-button" class="select-button">Select None</button>
+            <div id="current-path">
+                <span>Current Path:</span>
+                <div class="buttons-container">
+                    <button id="select-all-button" class="select-button">Select All</button>
+                    <button id="deselect-all-button" class="select-button">Select None</button>
+                </div>
             </div>
-            <h2>Selected Files:</h2>
+            <div id="directory-contents"></div>
+            <h2 style="color: #61dafb;padding-top: 15px;">Selected Paths</h2>
             <ul id="selected-files"></ul>
             <button id="save-config-button" class="save-button">Save Config</button>
         </div>
@@ -232,6 +239,11 @@
                 checkbox.addEventListener('change', (event) => {
                     event.stopPropagation();
                     toggleFileSelection(entry.path, checkbox.checked);
+                });
+
+                // Prevent parent click event when clicking checkbox
+                checkbox.addEventListener('click', (event) => {
+                    event.stopPropagation();
                 });
 
                 const icon = document.createElement('img');
