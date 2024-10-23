@@ -1,1 +1,1 @@
-tell me the code for hello world
+print("Hello, World!")
