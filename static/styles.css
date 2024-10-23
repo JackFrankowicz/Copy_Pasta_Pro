@@ -47,7 +47,7 @@ body {
 .input-area {
     position: relative;
     background-color: #1e1e1e;
-    padding: 30px 50px 15px;
+    padding: 30px 50px 30px;
     border-radius: 5px;
     margin-bottom: 15px;
     border: 1px solid #3c3c3c;
@@ -144,7 +144,8 @@ button.remove-input-button {
 }
 
 button#submit-button,
-button#copy-all-button {
+button#copy-all-button,
+button#settings-button{
     padding: 8px 20px;
     font-size: 16px;
     border-radius: 5px;

@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <!-- Fonts for title -->
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet" />
     <title>Settings</title>
     <link rel="stylesheet" href="/static/styles.css">
     <style>
@@ -96,9 +98,25 @@
         #current-path span:hover {
             color: #61dafb;
         }
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 8px 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            background-color: #0e639c;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .back-button:hover {
+            background-color: #1177bb;
+        }
     </style>
 </head>
 <body>
+    <button class="back-button" onclick="window.history.back()">Back</button>
     <div class="container">
         <h1 class="futuristic-title">Settings</h1>
         <div class="input-area">
