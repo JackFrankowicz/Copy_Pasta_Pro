@@ -69,7 +69,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-top: 10px;
+            /* Removed margin-top to align with current-path */
         }
         .select-button {
             padding: 6px 15px;
@@ -83,13 +83,14 @@
         .select-button:hover {
             background-color: #1177bb;
         }
-        #current-path {
+        #current-path-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-top: 15px;
             margin-bottom: 10px;
             color: #d4d4d4;
             font-size: 16px;
-            display: flex;
-            align-items: center;
         }
         #current-path span {
             cursor: pointer;
@@ -113,6 +114,12 @@
         .back-button:hover {
             background-color: #1177bb;
         }
+        .save-buttons-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
@@ -125,17 +132,21 @@
                 <input type="text" id="base-directory" class="path-input" placeholder="Enter base directory path">
                 <button id="browse-button" class="browse-button">Browse</button>
             </div>
-            <div id="current-path">
-                <span>Current Path:</span>
-                <div class="buttons-container">
+            <div id="current-path-container" style="display: flex; align-items: center; justify-content: flex-start;">
+                <div id="current-path"><span>/</span><span>/</span><span>home</span></div>
+                <div class="buttons-container" style="display: flex; gap: 10px; margin-left: 20px;">
                     <button id="select-all-button" class="select-button">Select All</button>
                     <button id="deselect-all-button" class="select-button">Select None</button>
                 </div>
             </div>
+            </div>
             <div id="directory-contents"></div>
-            <h2 style="color: #61dafb;padding-top: 15px;">Selected Paths</h2>
+            <h2 style="color: #61dafb; padding-top: 15px;">Selected Paths</h2>
             <ul id="selected-files"></ul>
-            <button id="save-config-button" class="save-button">Save Config</button>
+            <div class="save-buttons-container">
+                <button id="save-config-button" class="save-button">Save Config</button>
+                <button id="clear-all-button" class="save-button">Clear All</button>
+            </div>
         </div>
     </div>
 
@@ -144,18 +155,21 @@
         let selectedFiles = [];
         let currentPath = '';
 
-        // Fetch default base directory on page load
+        // Fetch current config.json on page load
         document.addEventListener('DOMContentLoaded', () => {
-            fetch('/get_default_base_directory')
+            fetch('/get_config')
                 .then(response => response.json())
                 .then(data => {
-                    baseDirectory = data.default_base_directory;
+                    baseDirectory = data.baseDirectory;
+                    selectedFiles = data.predefinedFiles || [];
                     document.getElementById('base-directory').value = baseDirectory;
                     // Load the base directory contents
                     loadDirectoryContents(baseDirectory);
+                    // Update the selected files display
+                    updateSelectedFilesDisplay();
                 })
                 .catch(error => {
-                    console.error('Error fetching default base directory:', error);
+                    console.error('Error fetching config:', error);
                 });
         });
 
@@ -362,6 +376,17 @@
             });
             updateSelectedFilesDisplay();
         }
+
+        // Added event listener for Clear All button
+        document.getElementById('clear-all-button').addEventListener('click', () => {
+            selectedFiles = [];
+            updateSelectedFilesDisplay();
+            // Uncheck all checkboxes in the directory contents
+            const checkboxes = document.querySelectorAll('#directory-contents input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+        });
     </script>
 </body>
 </html>

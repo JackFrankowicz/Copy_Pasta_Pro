@@ -364,3 +364,16 @@ button {
     background-color: #3c3c3c;
     border-radius: 4px;
 }
+#current-path-container {
+    display: flex;
+    align-items: center; /* Align vertically */
+    justify-content: flex-start; /* Align horizontally to the left */
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+.buttons-container {
+    display: flex;
+    gap: 10px; /* Gap between the buttons */
+    margin-left: 20px; /* Gap between the current path and buttons */
+}

@@ -177,6 +177,19 @@ async def o1_stream(request: Request):
     except Exception as error:
         logger.error(f"Error in o1_stream: {error}")
         return PlainTextResponse(content=f"Unexpected error: {str(error)}", status_code=500)
+    
+# Endpoint to get the current config.json
+@app.get("/get_config")
+async def get_config():
+    try:
+        config_file_path = os.path.join(program_base_directory, "config", "config.json")
+        with open(config_file_path, 'r') as config_file:
+            config_data = json.load(config_file)
+        return JSONResponse(content=config_data)
+    except Exception as e:
+        logger.error(f"Error reading config.json: {str(e)}")
+        return JSONResponse(content={"error": str(e)}, status_code=500)
+
 # POST: /save_code - Save files to the file base directory
 @app.post("/save_code")
 async def save_code(request: Request):

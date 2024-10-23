@@ -1,4 +1,7 @@
 {
-  "baseDirectory": "/home/jack/aaaDEV",
-  "predefinedFiles": []
+  "baseDirectory": "/home",
+  "predefinedFiles": [
+
+    "/home/example.js"
+  ]
 }
