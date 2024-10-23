@@ -15,16 +15,16 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 
 app = FastAPI()
 
-# 1. Program Base Directory (Where app is located)
+# Program Base Directory (Where app is located)
 program_base_directory = os.path.dirname(os.path.abspath(__file__))
 
 # Path to config.json in the program base directory
-config_file_path = os.path.join(program_base_directory, "config/config.json")
+config_file_path = os.path.join(program_base_directory, "config", "config.json")
 
-# 2. Load File Base Directory from config.json (This is where the dropdown files are stored)
+# Load File Base Directory from config.json
 with open(config_file_path, "r") as config_file:
     config = json.load(config_file)
-    file_base_directory = config["baseDirectory"]  # This is the directory for dropdown file operations
+    file_base_directory = config["baseDirectory"]
 
 # Check if file base directory is relative and resolve it
 if not os.path.isabs(file_base_directory):
@@ -39,7 +39,6 @@ if os.path.exists(config_directory):
     app.mount("/config", StaticFiles(directory=config_directory), name="config")
 else:
     logger.warning(f"Config directory {config_directory} does not exist")
-
 
 # POST: /api/o1 - Handles OpenAI model requests
 @app.post("/api/o1")
@@ -74,21 +73,14 @@ async def o1_stream(request: Request):
         logger.error(f"Error in o1_stream: {error}")
         return PlainTextResponse(content=f"Unexpected error: {str(error)}", status_code=500)
 
-
-# POST: /save_code - Save files to the file base directory (for dropdown files)
+# POST: /save_code - Save files to the file base directory
 @app.post("/save_code")
 async def save_code(request: Request):
-    """
-    Handles POST requests to save or overwrite code files.
-    Supports creating directories if they do not exist.
-    Expects JSON input with 'code' and 'file_path' fields.
-    """
     try:
         data = await request.json()
         code_content = data.get('code')
         file_path = data.get('file_path')
 
-        # Ensure both 'code' and 'file_path' are provided in the request
         if not code_content or not file_path:
             logger.warning("Missing 'code' or 'file_path' in the request.")
             return PlainTextResponse(content="Missing 'code' or 'file_path' in the request.", status_code=400)
@@ -99,7 +91,7 @@ async def save_code(request: Request):
         # Ensure the directory for the file exists, and create it if not
         directory = os.path.dirname(full_path)
         if not os.path.exists(directory):
-            os.makedirs(directory, exist_ok=True)  # This creates nested directories if necessary
+            os.makedirs(directory, exist_ok=True)
             logger.info(f"Created directory: {directory}")
 
         # Write the code content to the file (overwrite if it exists)
@@ -113,17 +105,12 @@ async def save_code(request: Request):
         logger.error(f"Error saving code: {error}")
         return PlainTextResponse(content=f"Failed to save code: {str(error)}", status_code=500)
 
-
-
 # GET: /get_code - Retrieve a file's content from the file base directory
 @app.get("/get_code")
 async def get_code(file_path: str = Query(..., description="Path of the file to read")):
     try:
         full_path = os.path.join(file_base_directory, file_path)
         normalized_path = os.path.normpath(full_path)
-        if not normalized_path.startswith(file_base_directory):
-            logger.warning(f"Attempt to access file outside file base directory: {normalized_path}")
-            return PlainTextResponse(content="Invalid file path", status_code=400)
 
         # Read the file content
         with open(normalized_path, 'r') as f:
@@ -133,7 +120,6 @@ async def get_code(file_path: str = Query(..., description="Path of the file to 
     except Exception as e:
         logger.error(f"Error reading file {file_path}: {str(e)}")
         return PlainTextResponse(content=f"Error reading file: {str(e)}", status_code=500)
-
 
 # GET: / - Serve index.html from the program base directory
 @app.get("/")
@@ -147,7 +133,6 @@ async def read_root():
     except Exception as e:
         logger.error(f"Error reading index.html: {str(e)}")
         return PlainTextResponse(content="Error reading index.html", status_code=500)
-
 
 # Serve static files from the /static folder in the program base directory
 static_directory = os.path.join(program_base_directory, "static")

@@ -1,0 +1,5 @@
+<!-- A simple folder icon -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <path fill="#FFD200" d="M2 10h20l8 8h32v36H2z"/>
+  <path fill="#FFA800" d="M62 18H30l-8-8H2"/>
+</svg>

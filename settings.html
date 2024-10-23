@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Settings</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        /* Additional styles */
+        .directory-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .directory-item, .file-item {
+            display: flex;
+            align-items: center;
+            padding-left: 20px;
+            cursor: pointer;
+            color: #d4d4d4;
+        }
+        .item-label {
+            margin-left: 8px;
+        }
+        .directory-item:hover, .file-item:hover {
+            background-color: #333;
+        }
+        .selected {
+            background-color: #0e639c;
+        }
+        .path-input {
+            width: 80%;
+            padding: 8px;
+            background-color: #2d2d2d;
+            color: #d4d4d4;
+            border: 1px solid #3c3c3c;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        .browse-button {
+            padding: 8px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            background-color: #0e639c;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .save-button {
+            padding: 8px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            background-color: #0e639c;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .save-button:hover, .browse-button:hover {
+            background-color: #1177bb;
+        }
+        .icon {
+            width: 24px;
+            height: 24px;
+        }
+        .buttons-container {
+            margin-bottom: 10px;
+        }
+        .select-button {
+            padding: 6px 15px;
+            font-size: 14px;
+            border-radius: 5px;
+            background-color: #555;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .select-button:hover {
+            background-color: #777;
+        }
+        #current-path {
+            margin-top: 15px;
+            color: #d4d4d4;
+            font-size: 16px;
+        }
+        #current-path span {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        #current-path span:hover {
+            color: #61dafb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="futuristic-title">Settings</h1>
+        <div class="input-area">
+            <label for="base-directory">Base Directory:</label>
+            <div style="display: flex; align-items: center;">
+                <input type="text" id="base-directory" class="path-input" placeholder="Enter base directory path">
+                <button id="browse-button" class="browse-button">Browse</button>
+            </div>
+            <div id="current-path"></div>
+            <div id="directory-contents"></div>
+            <div class="buttons-container">
+                <button id="select-all-button" class="select-button">Select All</button>
+                <button id="deselect-all-button" class="select-button">Select None</button>
+            </div>
+            <h2>Selected Files:</h2>
+            <ul id="selected-files"></ul>
+            <button id="save-config-button" class="save-button">Save Config</button>
+        </div>
+    </div>
+
+    <script>
+        let baseDirectory = '';
+        let selectedFiles = [];
+        let currentPath = '';
+
+        // Fetch default base directory on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('/get_default_base_directory')
+                .then(response => response.json())
+                .then(data => {
+                    baseDirectory = data.default_base_directory;
+                    document.getElementById('base-directory').value = baseDirectory;
+                    // Load the base directory contents
+                    loadDirectoryContents(baseDirectory);
+                })
+                .catch(error => {
+                    console.error('Error fetching default base directory:', error);
+                });
+        });
+
+        document.getElementById('browse-button').addEventListener('click', () => {
+            baseDirectory = document.getElementById('base-directory').value;
+            if (baseDirectory) {
+                loadDirectoryContents(baseDirectory);
+            } else {
+                alert('Please enter a base directory path.');
+            }
+        });
+
+        function loadDirectoryContents(path) {
+            currentPath = path;
+            updateCurrentPathDisplay();
+            fetch('/list_directory?path=' + encodeURIComponent(path))
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        displayDirectoryContents(data.entries, path);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function updateCurrentPathDisplay() {
+            const pathContainer = document.getElementById('current-path');
+            // Split the current path into parts
+            const pathParts = currentPath.split('/').filter(part => part !== '');
+            pathContainer.innerHTML = ''; // Clear previous
+
+            const baseLink = document.createElement('span');
+            baseLink.textContent = '/';
+            baseLink.addEventListener('click', () => {
+                loadDirectoryContents('/');
+            });
+            pathContainer.appendChild(baseLink);
+
+            let accumulatedPath = '';
+            pathParts.forEach((part, index) => {
+                accumulatedPath += '/' + part;
+                const separator = document.createElement('span');
+                separator.textContent = '/';
+                pathContainer.appendChild(separator);
+
+                const partLink = document.createElement('span');
+                partLink.textContent = part;
+                partLink.addEventListener('click', () => {
+                    loadDirectoryContents(accumulatedPath);
+                });
+                pathContainer.appendChild(partLink);
+            });
+        }
+
+        function displayDirectoryContents(entries, path) {
+            const container = document.getElementById('directory-contents');
+            container.innerHTML = ''; // Clear previous contents
+            const list = document.createElement('ul');
+            list.classList.add('directory-list');
+
+            entries.sort((a, b) => {
+                // Directories first
+                if (a.is_dir && !b.is_dir) return -1;
+                if (!a.is_dir && b.is_dir) return 1;
+                // Then alphabetically
+                return a.name.localeCompare(b.name);
+            });
+
+            // Add parent directory option
+            if (path !== baseDirectory) {
+                const parentItem = document.createElement('li');
+                const parentDiv = document.createElement('div');
+                parentDiv.classList.add('directory-item');
+                parentDiv.innerHTML = '<img src="/static/icons/folder.svg" class="icon"><span class="item-label">..</span>';
+                parentDiv.addEventListener('click', () => {
+                    const parentPath = path.substring(0, path.lastIndexOf('/')) || '/';
+                    loadDirectoryContents(parentPath);
+                });
+                parentItem.appendChild(parentDiv);
+                list.appendChild(parentItem);
+            }
+
+            entries.forEach(entry => {
+                const item = document.createElement('li');
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add(entry.is_dir ? 'directory-item' : 'file-item');
+
+                // Store the path in data attribute
+                itemDiv.dataset.path = entry.path;
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = selectedFiles.includes(entry.path);
+
+                checkbox.addEventListener('change', (event) => {
+                    event.stopPropagation();
+                    toggleFileSelection(entry.path, checkbox.checked);
+                });
+
+                const icon = document.createElement('img');
+                icon.src = entry.is_dir ? '/static/icons/folder.svg' : '/static/icons/file.svg';
+                icon.classList.add('icon');
+
+                const label = document.createElement('span');
+                label.textContent = entry.name;
+                label.classList.add('item-label');
+
+                itemDiv.appendChild(checkbox);
+                itemDiv.appendChild(icon);
+                itemDiv.appendChild(label);
+
+                itemDiv.addEventListener('click', (event) => {
+                    if (entry.is_dir) {
+                        loadDirectoryContents(entry.path);
+                    } else {
+                        checkbox.checked = !checkbox.checked;
+                        toggleFileSelection(entry.path, checkbox.checked);
+                    }
+                });
+
+                item.appendChild(itemDiv);
+                list.appendChild(item);
+            });
+
+            container.appendChild(list);
+        }
+
+        function toggleFileSelection(filePath, isSelected) {
+            const index = selectedFiles.indexOf(filePath);
+            if (isSelected) {
+                if (index === -1) {
+                    selectedFiles.push(filePath);
+                }
+            } else {
+                if (index > -1) {
+                    selectedFiles.splice(index, 1);
+                }
+            }
+            updateSelectedFilesDisplay();
+        }
+
+        function updateSelectedFilesDisplay() {
+            const selectedFilesContainer = document.getElementById('selected-files');
+            selectedFilesContainer.innerHTML = '';
+            selectedFiles.forEach(file => {
+                const listItem = document.createElement('li');
+                listItem.textContent = file;
+                selectedFilesContainer.appendChild(listItem);
+            });
+        }
+
+        document.getElementById('save-config-button').addEventListener('click', () => {
+            if (!baseDirectory) {
+                alert('Please select a base directory.');
+                return;
+            }
+            const payload = {
+                baseDirectory: baseDirectory,
+                predefinedFiles: selectedFiles
+            };
+            fetch('/save_config', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('Error saving config: ' + data.error);
+                    } else {
+                        alert('Config saved successfully.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+        document.getElementById('select-all-button').addEventListener('click', () => {
+            selectAllItems(true);
+        });
+
+        document.getElementById('deselect-all-button').addEventListener('click', () => {
+            selectAllItems(false);
+        });
+
+        function selectAllItems(select) {
+            const checkboxes = document.querySelectorAll('#directory-contents input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = select;
+                const itemPath = checkbox.parentElement.dataset.path;
+                toggleFileSelection(itemPath, select);
+            });
+            updateSelectedFilesDisplay();
+        }
+    </script>
+</body>
+</html>

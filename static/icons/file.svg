@@ -1,0 +1,5 @@
+<!-- A simple file icon -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <path fill="#E2E5E7" d="M48 0H12C9.8 0 8 1.8 8 4v56c0 2.2 1.8 4 4 4h40c2.2 0 4-1.8 4-4V12L48 0z"/>
+  <path fill="#B0B7BD" d="M48 0v12h12L48 0z"/>
+</svg>
