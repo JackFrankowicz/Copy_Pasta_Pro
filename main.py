@@ -4,7 +4,7 @@ import json
 from fastapi import FastAPI, Request, Query
 from fastapi.responses import JSONResponse, PlainTextResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
-from openai import OpenAI  # Assuming this is the correct import for OpenAI
+from openai import OpenAI  # Uncomment if you're using OpenAI's library
 
 # Initialize OpenAI client 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -20,6 +20,15 @@ program_base_directory = os.path.dirname(os.path.abspath(__file__))
 
 # Path to config.json in the program base directory
 config_file_path = os.path.join(program_base_directory, "config", "config.json")
+
+# Ensure the config directory exists
+if not os.path.exists(os.path.dirname(config_file_path)):
+    os.makedirs(os.path.dirname(config_file_path))
+
+# Initialize config if it doesn't exist
+if not os.path.exists(config_file_path):
+    with open(config_file_path, 'w') as config_file:
+        json.dump({"baseDirectory": program_base_directory, "predefinedFiles": []}, config_file)
 
 # Load File Base Directory from config.json
 with open(config_file_path, "r") as config_file:
@@ -39,6 +48,102 @@ if os.path.exists(config_directory):
     app.mount("/config", StaticFiles(directory=config_directory), name="config")
 else:
     logger.warning(f"Config directory {config_directory} does not exist")
+
+# Serve static files from the /static folder in the program base directory
+static_directory = os.path.join(program_base_directory, "static")
+if os.path.exists(static_directory):
+    app.mount("/static", StaticFiles(directory=static_directory), name="static")
+else:
+    logger.warning(f"Static directory {static_directory} does not exist.")
+
+# GET: / - Serve index.html from the program base directory
+@app.get("/")
+async def read_root():
+    index_path = os.path.join(program_base_directory, "index.html")
+    try:
+        with open(index_path, "r") as f:
+            content = f.read()
+        logger.info(f"Serving index.html from {index_path}")
+        return HTMLResponse(content=content)
+    except Exception as e:
+        logger.error(f"Error reading index.html: {str(e)}")
+        return PlainTextResponse(content="Error reading index.html", status_code=500)
+
+# GET: /settings - Serve settings.html from the program base directory
+@app.get("/settings")
+async def read_settings():
+    settings_path = os.path.join(program_base_directory, "settings.html")
+    try:
+        with open(settings_path, "r") as f:
+            content = f.read()
+        logger.info(f"Serving settings.html from {settings_path}")
+        return HTMLResponse(content=content)
+    except Exception as e:
+        logger.error(f"Error reading settings.html: {str(e)}")
+        return PlainTextResponse(content="Error reading settings.html", status_code=500)
+
+# Endpoint to get the default base directory
+@app.get("/get_default_base_directory")
+async def get_default_base_directory():
+    return JSONResponse(content={"default_base_directory": program_base_directory})
+
+# Endpoint to list directory contents (Modified to allow access to any directory)
+@app.get("/list_directory")
+async def list_directory(path: str = Query(..., description="Path of the directory to list")):
+    try:
+        # Ensure the path is absolute
+        if not os.path.isabs(path):
+            path = os.path.abspath(path)
+
+        # Check if the path exists and is a directory
+        if not os.path.exists(path) or not os.path.isdir(path):
+            logger.warning(f"Invalid directory path: {path}")
+            return JSONResponse(content={"error": "Invalid directory path"}, status_code=400)
+
+        # List the contents of the directory, excluding hidden files
+        items = [item for item in os.listdir(path) if not item.startswith('.')]
+        entries = []
+        for item in items:
+            item_path = os.path.join(path, item)
+            entries.append({
+                "name": item,
+                "path": item_path,
+                "is_dir": os.path.isdir(item_path)
+            })
+        return JSONResponse(content={"entries": entries})
+    except Exception as e:
+        logger.error(f"Error listing directory {path}: {str(e)}")
+        return JSONResponse(content={"error": str(e)}, status_code=500)
+
+# Endpoint to save config.json
+@app.post("/save_config")
+async def save_config(request: Request):
+    try:
+        data = await request.json()
+        # Validate data (ensure it has 'baseDirectory' and 'predefinedFiles')
+        base_directory = data.get('baseDirectory')
+        predefined_files = data.get('predefinedFiles')
+        if base_directory is None or predefined_files is None:
+            logger.warning("Missing 'baseDirectory' or 'predefinedFiles' in the request.")
+            return JSONResponse(content={"error": "Invalid data"}, status_code=400)
+
+        # Build the config dictionary
+        config = {
+            "baseDirectory": base_directory,
+            "predefinedFiles": predefined_files
+        }
+
+        # Save the config to config/config.json
+        config_file_path = os.path.join(program_base_directory, "config", "config.json")
+        with open(config_file_path, 'w') as f:
+            json.dump(config, f, indent=2)
+
+        logger.info(f"Config saved to {config_file_path}")
+        return JSONResponse(content={"status": "success", "message": "Config saved successfully."})
+    except Exception as e:
+        logger.error(f"Error saving config: {str(e)}")
+        return JSONResponse(content={"error": str(e)}, status_code=500)
+
 
 # POST: /api/o1 - Handles OpenAI model requests
 @app.post("/api/o1")
@@ -72,7 +177,6 @@ async def o1_stream(request: Request):
     except Exception as error:
         logger.error(f"Error in o1_stream: {error}")
         return PlainTextResponse(content=f"Unexpected error: {str(error)}", status_code=500)
-
 # POST: /save_code - Save files to the file base directory
 @app.post("/save_code")
 async def save_code(request: Request):
@@ -112,7 +216,6 @@ async def get_code(file_path: str = Query(..., description="Path of the file to 
         full_path = os.path.join(file_base_directory, file_path)
         normalized_path = os.path.normpath(full_path)
 
-        # Read the file content
         with open(normalized_path, 'r') as f:
             content = f.read()
         return PlainTextResponse(content=content)
@@ -120,23 +223,3 @@ async def get_code(file_path: str = Query(..., description="Path of the file to 
     except Exception as e:
         logger.error(f"Error reading file {file_path}: {str(e)}")
         return PlainTextResponse(content=f"Error reading file: {str(e)}", status_code=500)
-
-# GET: / - Serve index.html from the program base directory
-@app.get("/")
-async def read_root():
-    index_path = os.path.join(program_base_directory, "index.html")
-    try:
-        with open(index_path, "r") as f:
-            content = f.read()
-        logger.info(f"Serving index.html from {index_path}")
-        return HTMLResponse(content=content)
-    except Exception as e:
-        logger.error(f"Error reading index.html: {str(e)}")
-        return PlainTextResponse(content="Error reading index.html", status_code=500)
-
-# Serve static files from the /static folder in the program base directory
-static_directory = os.path.join(program_base_directory, "static")
-if os.path.exists(static_directory):
-    app.mount("/static", StaticFiles(directory=static_directory), name="static")
-else:
-    logger.warning(f"Static directory {static_directory} does not exist.")

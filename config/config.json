@@ -1,18 +1,11 @@
 {
-  "baseDirectory": "/home/jack/aaaDEV",
+  "baseDirectory": "/home/jack/aaa",
   "predefinedFiles": [
-    "/home/jack/aaaDEV/index.html",
     "/home/jack/aaaDEV/main.py",
     "/home/jack/aaaDEV/requirements.txt",
     "/home/jack/aaaDEV/settings.html",
-    "/home/jack/aaaDEV/test.py",
-    "/home/jack/aaaDEV/static",
-    "/home/jack/aaaDEV/static/apiServices.js",
-    "/home/jack/aaaDEV/static/init.js",
-    "/home/jack/aaaDEV/static/inputManager.js",
-    "/home/jack/aaaDEV/static/styles.css",
-    "/home/jack/aaaDEV/static/uiComponents.js",
-    "/home/jack/aaaDEV/static/icons/file.svg",
-    "/home/jack/aaaDEV/static/icons/folder.svg"
+    "/home/jack/aaa/new.js",
+    "/home/jack/aaa/new",
+    "/home/jack/aaa/static/styles.css"
   ]
 }
