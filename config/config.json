@@ -1,0 +1,8 @@
+{
+  "baseDirectory": "/base_directory",
+  "predefinedFiles": [
+    "example.js",
+    "example/example.py",
+    "ass.hat"
+  ]
+}

@@ -38,12 +38,7 @@
 
           <!-- File Selection Dropdown -->
           <select class="file-select">
-            <option value="">Insert context...</option>
-            <option value="static/script.js">static/script.js</option>
-            <option value="static/styles.css">static/styles.css</option>
-            <option value="index.html">index.html</option>
-            <option value="main.py">main.py</option>
-            <option value="test.py">test.py</option>
+            <option value="" disabled selected>Insert context...</option>
           </select>
 
           <!-- Input Textarea -->
@@ -71,12 +66,11 @@
         <option value="o1-mini">o1-mini</option>
       </select>
 
-<!-- Button Container -->
-<div class="button-container">
-  <button id="submit-button">Call API</button>
-  <button id="copy-all-button">Copy All Text</button>
-</div>
-
+      <!-- Button Container -->
+      <div class="button-container">
+        <button id="submit-button">Call API</button>
+        <button id="copy-all-button">Copy All Text</button>
+      </div>
 
       <!-- Response Div -->
       <div id="response"></div>
@@ -103,6 +97,21 @@
     import { formatResponse, copyCodeToClipboard } from '/static/uiComponents.js';
     import { saveCodeToFile, sendRequest, loadFileContentIntoTextarea } from '/static/apiServices.js';
     import { addInputArea } from '/static/inputManager.js';
+
+    // Fetch predefined files from config.json and populate the dropdown
+    fetch('/config/config.json')
+      .then(response => response.json())
+      .then(config => {
+        const predefinedFiles = config.predefinedFiles;
+        const fileSelect = document.querySelector('.file-select');
+        predefinedFiles.forEach(file => {
+          const option = document.createElement('option');
+          option.value = file;
+          option.textContent = file;
+          fileSelect.appendChild(option);
+        });
+      })
+      .catch(error => console.error('Error loading config:', error));
 
     // Make functions available globally if needed
     window.formatResponse = formatResponse;

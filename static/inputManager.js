@@ -1,9 +1,19 @@
-// inputManager.js
-
 import { loadFileContentIntoTextarea } from './apiServices.js';
 
+// Function to fetch available files from the server and return them as an array
+async function fetchAvailableFiles() {
+  try {
+    const response = await fetch('/config/config.json');
+    const config = await response.json();
+    return config.predefinedFiles || [];
+  } catch (error) {
+    console.error('Error fetching available files:', error);
+    return [];  // Return an empty array in case of an error
+  }
+}
+
 // Function to add a new input area with drag handle
-export function addInputArea(initialValue = '') {
+export async function addInputArea(initialValue = '') {
   const inputAreasContainer = document.getElementById('input-areas-container');
 
   // Create the input area container
@@ -22,14 +32,10 @@ export function addInputArea(initialValue = '') {
   const fileSelect = document.createElement('select');
   fileSelect.className = 'file-select';
 
-  const availableFiles = [
-    '',
-    'static/script.js',
-    'static/styles.css',
-    'index.html',
-    'main.py',
-    'test.py',
-  ];
+  // Fetch available files dynamically from the server
+  const availableFiles = await fetchAvailableFiles();
+
+  // Dynamically populate the file select with available files
   availableFiles.forEach((filePath) => {
     const option = document.createElement('option');
     option.value = filePath;
@@ -84,12 +90,16 @@ export function addInputArea(initialValue = '') {
   // Add event listener to the add button
   addButton.addEventListener('click', function (event) {
     event.preventDefault();
-    addInputArea();
+    addInputArea(); // Call the same function to add more areas
   });
 
   // Add event listener to the remove button
   removeButton.addEventListener('click', function (event) {
     event.preventDefault();
-    inputAreasContainer.removeChild(inputArea);
+    if (inputAreasContainer.childElementCount > 1) {
+      inputAreasContainer.removeChild(inputArea);
+    } else {
+      alert('At least one input area must remain.');
+    }
   });
 }

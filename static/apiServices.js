@@ -1,41 +1,43 @@
 // apiServices.js
 
 // Function to save code to a file via backend API
-export async function saveCodeToFile(codeBlock, fileSelect, customFileInput, saveButton, directoryInput = null) {
-  const codeContent = codeBlock.textContent;
-  let filePath = fileSelect.value;
+// Function to save code to a file via backend API
+export async function saveCodeToFile(codeBlock, fileSelect, customFileInput) {
+  const codeContent = codeBlock.textContent; // Grab the content of the code block
+  let filePath = fileSelect.value; // Get the selected file path from dropdown
 
-  // If the user chooses to input a custom file path
+  // Check if the custom path option is selected
   if (filePath === 'custom') {
     const customPath = customFileInput.value.trim();
     if (!customPath) {
-      alert('Please enter a valid file path.');
-      return;
+      alert('Please enter a valid custom file path.');
+      return; // Exit if no custom path is provided
     }
     filePath = customPath;
   }
 
-  // If a directory input is provided, append it to the base directory and file path
-  if (directoryInput && directoryInput.value.trim()) {
-    const directoryPath = directoryInput.value.trim();
-    // Always append directoryPath to the base directory
-    filePath = `${directoryPath}/${filePath}`; 
-  }
-
   try {
+    // Make sure filePath and codeContent are valid
+    if (!filePath || !codeContent) {
+      alert("Missing file path or content. Ensure the code block and file path are filled in.");
+      return;
+    }
+
+    // Send the code content to the backend for saving
     await axios.post('/save_code', {
       code: codeContent,
       file_path: filePath,
     });
-    const originalText = saveButton.textContent;
-    saveButton.textContent = 'Saved!';
-    setTimeout(() => {
-      saveButton.textContent = originalText;
-    }, 2000);
+
+    // Display success message
+    alert(`Code saved to ${filePath} successfully!`);
+
   } catch (error) {
-    alert('Failed to save code: ' + (error.response?.data || error.message));
+    // Show error message with details from backend
+    alert(`Failed to save code: ${error.response?.data || error.message}`);
   }
 }
+
 
 // Function to load file content into a specific textarea
 export async function loadFileContentIntoTextarea(filePath, textarea) {

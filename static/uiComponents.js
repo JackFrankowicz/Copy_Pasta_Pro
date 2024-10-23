@@ -1,7 +1,5 @@
-// uiComponents.js
-
 // Function to format and display the response with Markdown and enhanced code blocks
-export function formatResponse(responseText, responseDiv) {
+export async function formatResponse(responseText, responseDiv) {
   // Convert markdown to HTML using Marked.js
   const htmlContent = marked.parse(responseText);
 
@@ -9,14 +7,15 @@ export function formatResponse(responseText, responseDiv) {
   const contentDiv = document.createElement('div');
   contentDiv.innerHTML = htmlContent;
 
-  // Define available files and base directory (adjust as needed)
-  const availableFiles = [
-    'static/script.js',
-    'static/styles.css',
-    'index.html',
-    'main.py',
-    'test.py',
-  ];
+  // Fetch the available files list dynamically from the backend
+  let availableFiles = [];
+  try {
+    const response = await fetch('/config/config.json'); // Fetching the file list from config.json
+    const config = await response.json();
+    availableFiles = config.predefinedFiles;
+  } catch (error) {
+    console.error('Error loading config:', error);
+  }
 
   // Append copy buttons, file selection, and line numbers to code blocks
   const codeBlocks = contentDiv.querySelectorAll('pre code');
@@ -33,7 +32,7 @@ export function formatResponse(responseText, responseDiv) {
     const fileSelect = document.createElement('select');
     fileSelect.className = 'file-select';
 
-    // Add options to the select
+    // Add options to the select for predefined files
     availableFiles.forEach((filePath) => {
       const option = document.createElement('option');
       option.value = filePath;
@@ -54,7 +53,7 @@ export function formatResponse(responseText, responseDiv) {
     customFileInput.style.display = 'none'; // Hide it initially
     customFileInput.className = 'custom-file-input';
 
-    // When 'Custom Path...' is selected, show the input field
+    // Attach event listener to the file select dropdown
     fileSelect.addEventListener('change', () => {
       if (fileSelect.value === 'custom') {
         customFileInput.style.display = 'inline-block';
@@ -67,14 +66,19 @@ export function formatResponse(responseText, responseDiv) {
     const saveButton = document.createElement('button');
     saveButton.textContent = 'Save';
     saveButton.className = 'save-button';
-    saveButton.onclick = () =>
-      saveCodeToFile(codeBlock, fileSelect, customFileInput, saveButton);
+
+    // Attach event listener to save button
+    saveButton.addEventListener('click', () =>
+      saveCodeToFile(codeBlock, fileSelect, customFileInput)
+    );
 
     // Create the copy button
     const copyButton = document.createElement('button');
     copyButton.textContent = 'Copy';
     copyButton.className = 'copy-button';
-    copyButton.onclick = () => copyCodeToClipboard(codeBlock, copyButton);
+
+    // Attach event listener to copy button
+    copyButton.addEventListener('click', () => copyCodeToClipboard(codeBlock, copyButton));
 
     // Append elements to the code header
     codeHeader.appendChild(fileSelect);
@@ -90,6 +94,7 @@ export function formatResponse(responseText, responseDiv) {
     codeContainer.appendChild(pre);
   });
 
+  // Append the content to the response div
   responseDiv.appendChild(contentDiv);
 
   // After content is added to the DOM, highlight code blocks
