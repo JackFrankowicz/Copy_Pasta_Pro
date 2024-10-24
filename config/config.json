@@ -3,6 +3,13 @@
   "predefinedFiles": [
     "/home/jack/aaaDEV/index.html",
     "/home/jack/aaaDEV/main.py",
-    "/home/jack/aaaDEV/requirements.txt"
+    "/home/jack/aaaDEV/requirements.txt",
+    "/home/jack/aaaDEV/static/preset text snippets/do_not_explain.txt",
+    "/home/jack/aaaDEV/static/preset text snippets/give_excerpt.txt",
+    "/home/jack/aaaDEV/static/preset text snippets/give_full_code.txt",
+    "/home/jack/aaaDEV/static/preset text snippets/no_code_brainstorm.txt",
+    "/home/jack/aaaDEV/static/preset text snippets/no_ensure_code.txt",
+    "/home/jack/aaaDEV/static/preset text snippets/suggest_what_to_edit.txt",
+    "/home/jack/aaaDEV/static/preset text snippets/TEST.txt"
   ]
 }
