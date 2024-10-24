@@ -1,9 +1,9 @@
 import { addInputArea } from './inputManager.js';
-import { loadFileContentIntoTextarea, sendRequest } from './apiServices.js';
+import { loadFileContentIntoTextarea, sendRequest, getPredefinedFiles } from './apiServices.js';
 
 let inputAreasContainer;
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
   inputAreasContainer = document.getElementById('input-areas-container');
 
   // Initialize SortableJS for draggable input areas
@@ -12,15 +12,11 @@ document.addEventListener('DOMContentLoaded', function () {
     handle: '.drag-handle',
   });
 
-  // Initialize the first input area if it exists
-  const firstInputArea = document.querySelector('.input-area');
-  if (firstInputArea) {
-    initializeInputArea(firstInputArea);
-  } else {
-    // If no input areas exist, add one with pre-filled text
-    const preFilledText = 'Return the complete code of the files with suggested edits, do not ask me to insert existing code';
-    addInputArea(preFilledText);
-  }
+  // Fetch predefined files
+  const predefinedFiles = await getPredefinedFiles();
+
+  // Add the initial input area dynamically
+  addInputArea('', null, predefinedFiles);
 
   // Attach event listener to submit button
   const submitButton = document.getElementById('submit-button');
@@ -44,31 +40,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
-
-// Initialize input area function
-function initializeInputArea(inputArea) {
-  const fileSelect = inputArea.querySelector('.file-select');
-  const textarea = inputArea.querySelector('.input-textarea');
-  const addButton = inputArea.querySelector('.add-input-button');
-  const removeButton = inputArea.querySelector('.remove-input-button');
-
-  // Update the placeholder option
-  fileSelect.querySelector('option[value=""]').textContent = 'Insert context...';
-
-  // Add event listeners
-  addButton.addEventListener('click', function (event) {
-    event.preventDefault();
-    addInputArea();
-  });
-
-  removeButton.addEventListener('click', function (event) {
-    event.preventDefault();
-    inputAreasContainer.removeChild(inputArea);
-  });
-
-  const preFilledText = 'Return the complete code of the files with suggested edits, do not ask me to insert existing code';
-  textarea.value = preFilledText;
-}
 
 function copyAllText() {
   const textareas = document.querySelectorAll('.input-textarea');

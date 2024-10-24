@@ -2,7 +2,6 @@
   "baseDirectory": "/home/jack/aaaDEV",
   "predefinedFiles": [
     "/home/jack/aaaDEV/main.py",
-    "/home/jack/aaaDEV/index.html",
-    "/home/jack/aaaDEV/requirements.txt"
+    "/home/jack/aaaDEV/static/init.js"
   ]
 }

@@ -31,31 +31,7 @@
     <main>
       <!-- Input Areas Container -->
       <div id="input-areas-container">
-        <!-- Input Area -->
-        <div class="input-area">
-          <!-- Drag Handle -->
-          <span class="drag-handle"><i class="fas fa-grip-lines"></i></span>
-
-          <!-- File Selection Dropdown -->
-          <select class="file-select">
-            <option value="" disabled selected>Insert context...</option>
-          </select>
-
-          <!-- Input Textarea -->
-          <textarea class="input-textarea" placeholder="Enter your text here...">Return the complete code of the files with suggested edits, do not ask me to insert existing code</textarea>
-
-          <!-- Buttons Container -->
-          <div class="input-area-buttons">
-            <!-- Add Input Area Button -->
-            <button class="add-input-button" title="Add Input Area">
-              <i class="fas fa-plus"></i>
-            </button>
-            <!-- Remove Input Area Button -->
-            <button class="remove-input-button" title="Remove Input Area">
-              <i class="fas fa-minus"></i>
-            </button>
-          </div>
-        </div>
+        <!-- The initial input area will be added dynamically via JavaScript -->
       </div>
 
       <!-- Model Selection Dropdown -->
@@ -99,50 +75,8 @@
   <!-- Custom Scripts -->
   <script type="module">
     import { formatResponse, copyCodeToClipboard } from '/static/uiComponents.js';
-    import { saveCodeToFile, sendRequest, loadFileContentIntoTextarea } from '/static/apiServices.js';
+    import { saveCodeToFile, sendRequest, loadFileContentIntoTextarea, getPredefinedFiles } from '/static/apiServices.js';
     import { addInputArea } from '/static/inputManager.js';
-
-    // Function to update the file select dropdowns
-    function updateFileSelectDropdowns() {
-      fetch('/config/config.json')
-        .then(response => response.json())
-        .then(config => {
-          const predefinedFiles = config.predefinedFiles;
-          const fileSelects = document.querySelectorAll('.file-select');
-          fileSelects.forEach(fileSelect => {
-            // Clear existing options
-            while (fileSelect.options.length > 1) {
-              fileSelect.remove(1);
-            }
-            // Add new options
-            predefinedFiles.forEach(file => {
-              const option = document.createElement('option');
-              option.value = file;
-              option.textContent = file;
-              fileSelect.appendChild(option);
-            });
-          });
-        })
-        .catch(error => console.error('Error loading config:', error));
-    }
-
-    // Fetch predefined files from config.json and populate the dropdowns
-    updateFileSelectDropdowns();
-
-    // Add event listener to update dropdowns when the page becomes visible again
-    document.addEventListener('visibilitychange', function () {
-      if (document.visibilityState === 'visible') {
-        updateFileSelectDropdowns();
-      }
-    });
-
-    // Make functions available globally if needed
-    window.formatResponse = formatResponse;
-    window.copyCodeToClipboard = copyCodeToClipboard;
-    window.saveCodeToFile = saveCodeToFile;
-    window.sendRequest = sendRequest;
-    window.loadFileContentIntoTextarea = loadFileContentIntoTextarea;
-    window.addInputArea = addInputArea;
 
     // Initialize the application
     import '/static/init.js';

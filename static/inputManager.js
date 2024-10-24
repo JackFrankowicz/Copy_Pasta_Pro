@@ -1,8 +1,13 @@
-import { loadFileContentIntoTextarea } from './apiServices.js';
+import { loadFileContentIntoTextarea, getPredefinedFiles } from './apiServices.js';
 
 // Function to add a new input area with drag handle
-export function addInputArea(initialValue = '', referenceNode = null) {
+export async function addInputArea(initialValue = '', referenceNode = null, predefinedFiles = null) {
   const inputAreasContainer = document.getElementById('input-areas-container');
+
+  if (!predefinedFiles) {
+    // Fetch predefined files if not provided
+    predefinedFiles = await getPredefinedFiles();
+  }
 
   // Create the input area container
   const inputArea = document.createElement('div');
@@ -27,6 +32,14 @@ export function addInputArea(initialValue = '', referenceNode = null) {
   placeholderOption.disabled = true;
   placeholderOption.selected = true;
   fileSelect.appendChild(placeholderOption);
+
+  // Populate the file select dropdown
+  predefinedFiles.forEach((file) => {
+    const option = document.createElement('option');
+    option.value = file;
+    option.textContent = file;
+    fileSelect.appendChild(option);
+  });
 
   // Create the input textarea
   const textarea = document.createElement('textarea');
@@ -77,9 +90,11 @@ export function addInputArea(initialValue = '', referenceNode = null) {
   });
 
   // Add event listener to the add button
-  addButton.addEventListener('click', function (event) {
+  addButton.addEventListener('click', async function (event) {
     event.preventDefault();
-    addInputArea('', inputArea).then(() => {
+    // Fetch predefined files again in case they've changed
+    const updatedPredefinedFiles = await getPredefinedFiles();
+    addInputArea('', inputArea, updatedPredefinedFiles).then(() => {
       // Optionally scroll to the new input area
       if (inputArea.nextSibling) {
         inputArea.nextSibling.scrollIntoView({ behavior: 'smooth' });
