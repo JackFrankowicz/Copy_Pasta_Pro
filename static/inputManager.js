@@ -13,7 +13,7 @@ async function fetchAvailableFiles() {
 }
 
 // Function to add a new input area with drag handle
-export async function addInputArea(initialValue = '') {
+export async function addInputArea(initialValue = '', referenceNode = null) {
   const inputAreasContainer = document.getElementById('input-areas-container');
 
   // Create the input area container
@@ -32,6 +32,14 @@ export async function addInputArea(initialValue = '') {
   const fileSelect = document.createElement('select');
   fileSelect.className = 'file-select';
 
+  // Create the placeholder option
+  const placeholderOption = document.createElement('option');
+  placeholderOption.value = '';
+  placeholderOption.textContent = 'Insert context...';
+  placeholderOption.disabled = true;
+  placeholderOption.selected = true;
+  fileSelect.appendChild(placeholderOption);
+
   // Fetch available files dynamically from the server
   const availableFiles = await fetchAvailableFiles();
 
@@ -39,7 +47,7 @@ export async function addInputArea(initialValue = '') {
   availableFiles.forEach((filePath) => {
     const option = document.createElement('option');
     option.value = filePath;
-    option.textContent = filePath === '' ? 'Insert context...' : filePath;
+    option.textContent = filePath;
     fileSelect.appendChild(option);
   });
 
@@ -74,8 +82,12 @@ export async function addInputArea(initialValue = '') {
   inputArea.appendChild(textarea);
   inputArea.appendChild(buttonsContainer);
 
-  // Append the input area to the container
-  inputAreasContainer.appendChild(inputArea);
+  // Insert the new input area after the referenceNode or append to the container
+  if (referenceNode && referenceNode.parentNode === inputAreasContainer) {
+    inputAreasContainer.insertBefore(inputArea, referenceNode.nextSibling);
+  } else {
+    inputAreasContainer.appendChild(inputArea);
+  }
 
   // Add event listener to the file select
   fileSelect.addEventListener('change', function () {
@@ -90,7 +102,12 @@ export async function addInputArea(initialValue = '') {
   // Add event listener to the add button
   addButton.addEventListener('click', function (event) {
     event.preventDefault();
-    addInputArea(); // Call the same function to add more areas
+    addInputArea('', inputArea).then(() => {
+      // Optionally scroll to the new input area
+      if (inputArea.nextSibling) {
+        inputArea.nextSibling.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
   });
 
   // Add event listener to the remove button
