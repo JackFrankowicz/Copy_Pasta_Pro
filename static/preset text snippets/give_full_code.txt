@@ -1,1 +1,4 @@
-Please return the complete files of the code you suggest to edit. Do not leave spaces to insert my code or existing code or previous code. The files must be 100% complete to function without further editing.
+I am giving you all my code but please only return the relevant code to edit. 
+Please return the complete files of the code you suggest to edit. 
+Do not leave spaces to insert my code or existing code or previous code. 
+The files must be 100% complete to function without further editing.

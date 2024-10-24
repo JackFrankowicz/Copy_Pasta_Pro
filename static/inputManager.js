@@ -1,19 +1,7 @@
 import { loadFileContentIntoTextarea } from './apiServices.js';
 
-// Function to fetch available files from the server and return them as an array
-async function fetchAvailableFiles() {
-  try {
-    const response = await fetch('/config/config.json');
-    const config = await response.json();
-    return config.predefinedFiles || [];
-  } catch (error) {
-    console.error('Error fetching available files:', error);
-    return [];  // Return an empty array in case of an error
-  }
-}
-
 // Function to add a new input area with drag handle
-export async function addInputArea(initialValue = '', referenceNode = null) {
+export function addInputArea(initialValue = '', referenceNode = null) {
   const inputAreasContainer = document.getElementById('input-areas-container');
 
   // Create the input area container
@@ -39,17 +27,6 @@ export async function addInputArea(initialValue = '', referenceNode = null) {
   placeholderOption.disabled = true;
   placeholderOption.selected = true;
   fileSelect.appendChild(placeholderOption);
-
-  // Fetch available files dynamically from the server
-  const availableFiles = await fetchAvailableFiles();
-
-  // Dynamically populate the file select with available files
-  availableFiles.forEach((filePath) => {
-    const option = document.createElement('option');
-    option.value = filePath;
-    option.textContent = filePath;
-    fileSelect.appendChild(option);
-  });
 
   // Create the input textarea
   const textarea = document.createElement('textarea');

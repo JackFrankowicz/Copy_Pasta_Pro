@@ -102,20 +102,39 @@
     import { saveCodeToFile, sendRequest, loadFileContentIntoTextarea } from '/static/apiServices.js';
     import { addInputArea } from '/static/inputManager.js';
 
-    // Fetch predefined files from config.json and populate the dropdown
-    fetch('/config/config.json')
-      .then(response => response.json())
-      .then(config => {
-        const predefinedFiles = config.predefinedFiles;
-        const fileSelect = document.querySelector('.file-select');
-        predefinedFiles.forEach(file => {
-          const option = document.createElement('option');
-          option.value = file;
-          option.textContent = file;
-          fileSelect.appendChild(option);
-        });
-      })
-      .catch(error => console.error('Error loading config:', error));
+    // Function to update the file select dropdowns
+    function updateFileSelectDropdowns() {
+      fetch('/config/config.json')
+        .then(response => response.json())
+        .then(config => {
+          const predefinedFiles = config.predefinedFiles;
+          const fileSelects = document.querySelectorAll('.file-select');
+          fileSelects.forEach(fileSelect => {
+            // Clear existing options
+            while (fileSelect.options.length > 1) {
+              fileSelect.remove(1);
+            }
+            // Add new options
+            predefinedFiles.forEach(file => {
+              const option = document.createElement('option');
+              option.value = file;
+              option.textContent = file;
+              fileSelect.appendChild(option);
+            });
+          });
+        })
+        .catch(error => console.error('Error loading config:', error));
+    }
+
+    // Fetch predefined files from config.json and populate the dropdowns
+    updateFileSelectDropdowns();
+
+    // Add event listener to update dropdowns when the page becomes visible again
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'visible') {
+        updateFileSelectDropdowns();
+      }
+    });
 
     // Make functions available globally if needed
     window.formatResponse = formatResponse;

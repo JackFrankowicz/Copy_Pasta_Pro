@@ -30,18 +30,18 @@ document.addEventListener('DOMContentLoaded', function () {
   const copyAllButton = document.getElementById('copy-all-button');
   copyAllButton.addEventListener('click', copyAllText);
 
-  // Attach file select event listeners after dynamic content is loaded
-  const fileSelects = document.querySelectorAll('.file-select');
-  fileSelects.forEach(fileSelect => {
-    fileSelect.addEventListener('change', function () {
+  // Event delegation for dynamic content
+  inputAreasContainer.addEventListener('change', function (event) {
+    if (event.target && event.target.classList.contains('file-select')) {
+      const fileSelect = event.target;
       const textarea = fileSelect.closest('.input-area').querySelector('.input-textarea');
-      const filePath = this.value;
+      const filePath = fileSelect.value;
       if (filePath) {
         loadFileContentIntoTextarea(filePath, textarea);
       } else {
         textarea.value = '';
       }
-    });
+    }
   });
 });
 
@@ -56,15 +56,6 @@ function initializeInputArea(inputArea) {
   fileSelect.querySelector('option[value=""]').textContent = 'Insert context...';
 
   // Add event listeners
-  fileSelect.addEventListener('change', function () {
-    const filePath = this.value;
-    if (filePath) {
-      loadFileContentIntoTextarea(filePath, textarea);
-    } else {
-      textarea.value = '';
-    }
-  });
-
   addButton.addEventListener('click', function (event) {
     event.preventDefault();
     addInputArea();
