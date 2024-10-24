@@ -1,8 +1,10 @@
 import { addInputArea } from './inputManager.js';
 import { loadFileContentIntoTextarea, sendRequest } from './apiServices.js';
 
+let inputAreasContainer;
+
 document.addEventListener('DOMContentLoaded', function () {
-  const inputAreasContainer = document.getElementById('input-areas-container');
+  inputAreasContainer = document.getElementById('input-areas-container');
 
   // Initialize SortableJS for draggable input areas
   Sortable.create(inputAreasContainer, {

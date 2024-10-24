@@ -1,7 +1,8 @@
 {
-  "baseDirectory": "/home",
+  "baseDirectory": "/home/jack/aaaDEV",
   "predefinedFiles": [
-
-    "/home/example.js"
+    "/home/jack/aaaDEV/index.html",
+    "/home/jack/aaaDEV/main.py",
+    "/home/jack/aaaDEV/requirements.txt"
   ]
 }

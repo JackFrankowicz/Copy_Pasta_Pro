@@ -152,25 +152,43 @@
 
     <script>
         let baseDirectory = '';
+        let defaultBaseDirectory = '';
         let selectedFiles = [];
         let currentPath = '';
 
-        // Fetch current config.json on page load
+        // Fetch default base directory and current config on page load
         document.addEventListener('DOMContentLoaded', () => {
-            fetch('/get_config')
-                .then(response => response.json())
-                .then(data => {
-                    baseDirectory = data.baseDirectory;
-                    selectedFiles = data.predefinedFiles || [];
-                    document.getElementById('base-directory').value = baseDirectory;
-                    // Load the base directory contents
-                    loadDirectoryContents(baseDirectory);
-                    // Update the selected files display
-                    updateSelectedFilesDisplay();
-                })
-                .catch(error => {
-                    console.error('Error fetching config:', error);
-                });
+            Promise.all([
+                fetch('/get_default_base_directory').then(response => response.json()),
+                fetch('/get_config').then(response => response.json())
+            ])
+            .then(([defaultData, configData]) => {
+                // Set defaultBaseDirectory to the program's base directory
+                defaultBaseDirectory = defaultData.default_base_directory;
+
+                // Set baseDirectory to the program's base directory by default
+                baseDirectory = defaultBaseDirectory;
+
+                // If config.json has a baseDirectory, use that instead
+                if (configData.baseDirectory) {
+                    baseDirectory = configData.baseDirectory;
+                }
+
+                // Set the input field to the baseDirectory
+                document.getElementById('base-directory').value = baseDirectory;
+
+                // Set selectedFiles from config.json if available
+                selectedFiles = configData.predefinedFiles || [];
+
+                // Load the base directory contents
+                loadDirectoryContents(baseDirectory);
+
+                // Update the selected files display
+                updateSelectedFilesDisplay();
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
         });
 
         document.getElementById('browse-button').addEventListener('click', () => {
@@ -379,13 +397,22 @@
 
         // Added event listener for Clear All button
         document.getElementById('clear-all-button').addEventListener('click', () => {
+            // Reset selected files
             selectedFiles = [];
             updateSelectedFilesDisplay();
+
             // Uncheck all checkboxes in the directory contents
             const checkboxes = document.querySelectorAll('#directory-contents input[type="checkbox"]');
             checkboxes.forEach(checkbox => {
                 checkbox.checked = false;
             });
+
+            // Reset base directory to default
+            baseDirectory = defaultBaseDirectory;
+            document.getElementById('base-directory').value = baseDirectory;
+
+            // Reload directory contents
+            loadDirectoryContents(baseDirectory);
         });
     </script>
 </body>
