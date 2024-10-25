@@ -160,6 +160,22 @@ export async function getPredefinedFiles() {
     }
 }
 
+
+// Function to fetch base directory
+export async function getBaseDirectory() {
+    try {
+        const response = await fetch('/get_config');
+        const data = await response.json();
+        return data.baseDirectory || '';
+    } catch (error) {
+        console.error('Error fetching base directory:', error);
+        return '';
+    }
+}
+
+
+
+
 // Function to save code via the backend API (if needed elsewhere)
 export async function saveCode(content, filePath) {
     try {

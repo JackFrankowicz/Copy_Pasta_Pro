@@ -1,8 +1,10 @@
-// Import necessary functions
-import { saveCodeToFile, getPredefinedFiles } from './apiServices.js';
+// Import the new function
+import { saveCodeToFile, getPredefinedFiles, getBaseDirectory } from './apiServices.js';
 
-// Function to format and display the response content
 export async function formatResponse(content, container) {
+    // Get the base directory
+    const baseDirectory = await getBaseDirectory();
+
     // Parse the markdown content
     const htmlContent = marked.parse(content);
 
@@ -55,10 +57,10 @@ export async function formatResponse(content, container) {
         // Create custom file path input (hidden by default)
         const customFileInput = document.createElement('input');
         customFileInput.type = 'text';
-        customFileInput.placeholder = 'Enter custom file path';
+        customFileInput.placeholder = baseDirectory || 'Enter filename to save in base directory';
         customFileInput.className = 'custom-file-input';
         customFileInput.style.display = 'none';
-
+        
         // Show or hide the custom file input based on selection
         fileSelect.addEventListener('change', () => {
             if (fileSelect.value === 'custom') {
@@ -67,6 +69,15 @@ export async function formatResponse(content, container) {
                 customFileInput.style.display = 'none';
             }
         });
+
+        // Create a container for fileSelect and customFileInput
+        const fileSelectContainer = document.createElement('div');
+        fileSelectContainer.style.display = 'flex';
+        fileSelectContainer.style.flexDirection = 'column';
+
+        // Append fileSelect and customFileInput to the container
+        fileSelectContainer.appendChild(fileSelect);
+        fileSelectContainer.appendChild(customFileInput);
 
         // Create the save button
         const saveButton = document.createElement('button');
@@ -88,9 +99,10 @@ export async function formatResponse(content, container) {
             copyCodeToClipboard(codeElement.textContent, copyButton);
         });
 
-        // Append elements to the code header
-        codeHeader.appendChild(fileSelect);
-        codeHeader.appendChild(customFileInput);
+        // Append the container to codeHeader
+        codeHeader.appendChild(fileSelectContainer);
+
+        // Append save and copy buttons as before
         codeHeader.appendChild(saveButton);
         codeHeader.appendChild(copyButton);
 

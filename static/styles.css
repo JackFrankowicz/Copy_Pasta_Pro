@@ -149,6 +149,7 @@ button#settings-button{
     padding: 8px 20px;
     font-size: 16px;
     border-radius: 5px;
+    margin-left: 20px,
 }
 
 /* Button Container with Flexbox Gap */
@@ -175,7 +176,7 @@ button#settings-button{
     font-size: 18px;
     font-weight: bold;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
     color: #61dafb;
 }
 
@@ -215,38 +216,34 @@ button#settings-button{
 /* Code Header */
 .code-header {
     display: flex;
-    align-items: center;
+    align-items: center; /* Center-aligns items vertically */
     padding: 10px;
     padding-bottom: 5px;
     border-radius: 5px 5px 0 0;
     gap: 10px; /* Added gap for spacing between elements */
+    justify-content: space-between; /* Pushes buttons to the right */
     flex-wrap: wrap; /* Allows wrapping on smaller screens */
 }
 
-.code-header .file-name,
-.code-header .language {
-    flex: 1;
-    color: #d4d4d4;
-    font-size: 14px;
+/* Flex container for file select and custom input */
+.code-header > div {
+    display: flex;
+    align-items: flex-start; /* Aligns items at the top */
+    gap: 10px; /* Adds gap between file-select and custom input */
+    flex-grow: 1; /* Allows inputs to take up all available space */
 }
 
+/* File Select and Custom File Input */
 .code-header .file-select,
 .code-header .custom-file-input {
-    width: auto;
-    flex: 1;
+    width: 100%; /* Expands inputs to fill available space */
     padding: 8px;
-    background-color: #2d2d2d;
     color: #d4d4d4;
     border: 1px solid #3c3c3c;
     border-radius: 5px;
     font-size: 16px;
     appearance: none;
-    margin-bottom: 0;
-}
-
-.code-header .custom-file-input {
-    /* Reduced margin-left from 10px to 5px for tighter spacing */
-    margin-left: 5px;
+    margin-bottom: 0; /* Removes any bottom margin */
 }
 
 /* Save and Copy Buttons within Code Header */
@@ -255,14 +252,12 @@ button#settings-button{
     padding: 8px 12px;
     font-size: 14px;
     border-radius: 3px;
-    /* Removed any previous gap-related properties */
+    margin-left: auto; /* Aligns buttons to the right */
 }
-
 
 /* Code Container */
 .code-container {
     margin-bottom: 20px;
-    border: 1px solid #3c3c3c;
     border-radius: 5px;
 }
 

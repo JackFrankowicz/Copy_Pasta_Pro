@@ -348,33 +348,37 @@
         }
 
         document.getElementById('save-config-button').addEventListener('click', () => {
-            if (!baseDirectory) {
-                alert('Please select a base directory.');
-                return;
+    if (!baseDirectory) {
+        alert('Please select a base directory.');
+        return;
+    }
+    const payload = {
+        baseDirectory: baseDirectory,
+        predefinedFiles: selectedFiles
+    };
+    fetch('/save_config', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert('Error saving config: ' + data.error);
+            } else {
+                // Refresh the page after successful save
+                location.reload();
             }
-            const payload = {
-                baseDirectory: baseDirectory,
-                predefinedFiles: selectedFiles
-            };
-            fetch('/save_config', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        alert('Error saving config: ' + data.error);
-                    } else {
-                        alert('Config saved successfully.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error saving config: ' + error);
         });
+});
+
+
 
         document.getElementById('select-all-button').addEventListener('click', () => {
             selectAllItems(true);
