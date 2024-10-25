@@ -38,8 +38,8 @@
             border-radius: 5px;
             font-size: 16px;
         }
-        .browse-button {
-            padding: 8px 20px;
+        .browse-button, .select-button {
+            padding: 8px 15px;
             font-size: 16px;
             border-radius: 5px;
             background-color: #0e639c;
@@ -58,7 +58,7 @@
             cursor: pointer;
             margin-top: 15px;
         }
-        .save-button:hover, .browse-button:hover {
+        .save-button:hover, .browse-button:hover, .select-button:hover {
             background-color: #1177bb;
         }
         .icon {
@@ -69,19 +69,6 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            /* Removed margin-top to align with current-path */
-        }
-        .select-button {
-            padding: 6px 15px;
-            font-size: 14px;
-            border-radius: 5px;
-            background-color: #0e639c;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-        }
-        .select-button:hover {
-            background-color: #1177bb;
         }
         #current-path-container {
             display: flex;
@@ -120,6 +107,54 @@
             gap: 10px;
             margin-top: 15px;
         }
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #2d2d2d;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #3c3c3c;
+            width: 80%;
+            color: #d4d4d4;
+        }
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close-button:hover, .close-button:focus {
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #modal-current-path span {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        #modal-current-path span:hover {
+            color: #61dafb;
+        }
+        #modal-directory-contents ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        #modal-directory-contents li {
+            margin: 5px 0;
+        }
+        .modal .select-button {
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
@@ -130,14 +165,17 @@
             <label for="base-directory">Base Directory:</label>
             <div style="display: flex; align-items: center;">
                 <input type="text" id="base-directory" class="path-input" placeholder="Enter base directory path">
+                <button id="select-button" class="select-button">Select</button>
                 <button id="browse-button" class="browse-button">Browse</button>
             </div>
             <div id="current-path-container" style="display: flex; align-items: center; justify-content: flex-start;">
                 <div id="current-path"><span>/</span><span>/</span><span>home</span></div>
-                <div class="buttons-container" style="display: flex; gap: 10px; margin-left: 20px;">
+                <div class="buttons-container" style="display: flex; gap: 0px; margin-left: 1px;">
                     <button id="select-all-button" class="select-button">Select All</button>
                     <button id="deselect-all-button" class="select-button">Select None</button>
-                </div>
+                
+            </div>
+            
             </div>
             <div id="directory-contents"></div>
             <h2 style="color: #61dafb; padding-top: 15px;">Selected Paths</h2>
@@ -146,6 +184,19 @@
                 <button id="save-config-button" class="save-button">Save Config</button>
                 <button id="clear-all-button" class="save-button">Clear All</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Directory Browser Modal -->
+    <div id="directory-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Select Base Directory</h2>
+            <div id="modal-current-path-container">
+                <div id="modal-current-path"></div>
+            </div>
+            <div id="modal-directory-contents"></div>
+            <button id="modal-select-button" class="select-button">Select Directory</button>
         </div>
     </div>
 
@@ -190,7 +241,7 @@
             });
         });
 
-        document.getElementById('browse-button').addEventListener('click', () => {
+        document.getElementById('select-button').addEventListener('click', () => {
             baseDirectory = document.getElementById('base-directory').value;
             if (baseDirectory) {
                 loadDirectoryContents(baseDirectory);
@@ -198,6 +249,137 @@
                 alert('Please enter a base directory path.');
             }
         });
+
+        // Modal functionality
+        const modal = document.getElementById('directory-modal');
+        const closeButton = document.querySelector('.close-button');
+        const modalSelectButton = document.getElementById('modal-select-button');
+        let modalCurrentPath = '/';
+
+        document.getElementById('browse-button').addEventListener('click', () => {
+            modal.style.display = 'block';
+            modalCurrentPath = '/'; // Start from root
+            loadModalDirectoryContents(modalCurrentPath);
+        });
+
+        closeButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        modalSelectButton.addEventListener('click', () => {
+            baseDirectory = modalCurrentPath;
+            document.getElementById('base-directory').value = baseDirectory;
+            modal.style.display = 'none';
+            loadDirectoryContents(baseDirectory);
+        });
+
+        function loadModalDirectoryContents(path) {
+            modalCurrentPath = path;
+            updateModalCurrentPathDisplay();
+            fetch('/list_directory?path=' + encodeURIComponent(path))
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        displayModalDirectoryContents(data.entries, path);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function updateModalCurrentPathDisplay() {
+            const pathContainer = document.getElementById('modal-current-path');
+            const pathParts = modalCurrentPath.split('/').filter(part => part !== '');
+            pathContainer.innerHTML = ''; // Clear previous
+
+            const baseLink = document.createElement('span');
+            baseLink.textContent = '/';
+            baseLink.addEventListener('click', () => {
+                loadModalDirectoryContents('/');
+            });
+            pathContainer.appendChild(baseLink);
+
+            let accumulatedPath = '';
+            pathParts.forEach((part, index) => {
+                accumulatedPath += '/' + part;
+                const separator = document.createElement('span');
+                separator.textContent = '/';
+                pathContainer.appendChild(separator);
+
+                const partLink = document.createElement('span');
+                partLink.textContent = part;
+                partLink.addEventListener('click', () => {
+                    loadModalDirectoryContents(accumulatedPath);
+                });
+                pathContainer.appendChild(partLink);
+            });
+        }
+
+        function displayModalDirectoryContents(entries, path) {
+            const container = document.getElementById('modal-directory-contents');
+            container.innerHTML = ''; // Clear previous contents
+            const list = document.createElement('ul');
+            list.classList.add('directory-list');
+
+            entries.sort((a, b) => {
+                // Directories first
+                if (a.is_dir && !b.is_dir) return -1;
+                if (!a.is_dir && b.is_dir) return 1;
+                // Then alphabetically
+                return a.name.localeCompare(b.name);
+            });
+
+            // Add parent directory option
+            if (path !== '/') {
+                const parentItem = document.createElement('li');
+                const parentDiv = document.createElement('div');
+                parentDiv.classList.add('directory-item');
+                parentDiv.innerHTML = '<img src="/static/icons/folder.svg" class="icon"><span class="item-label">..</span>';
+                parentDiv.addEventListener('click', () => {
+                    const parentPath = path.substring(0, path.lastIndexOf('/')) || '/';
+                    loadModalDirectoryContents(parentPath);
+                });
+                parentItem.appendChild(parentDiv);
+                list.appendChild(parentItem);
+            }
+
+            entries.forEach(entry => {
+                if (entry.is_dir) {
+                    const item = document.createElement('li');
+                    const itemDiv = document.createElement('div');
+                    itemDiv.classList.add('directory-item');
+
+                    const icon = document.createElement('img');
+                    icon.src = '/static/icons/folder.svg';
+                    icon.classList.add('icon');
+
+                    const label = document.createElement('span');
+                    label.textContent = entry.name;
+                    label.classList.add('item-label');
+
+                    itemDiv.appendChild(icon);
+                    itemDiv.appendChild(label);
+
+                    itemDiv.addEventListener('click', () => {
+                        loadModalDirectoryContents(entry.path);
+                    });
+
+                    item.appendChild(itemDiv);
+                    list.appendChild(item);
+                }
+            });
+
+            container.appendChild(list);
+        }
 
         function loadDirectoryContents(path) {
             currentPath = path;
@@ -348,37 +530,35 @@
         }
 
         document.getElementById('save-config-button').addEventListener('click', () => {
-    if (!baseDirectory) {
-        alert('Please select a base directory.');
-        return;
-    }
-    const payload = {
-        baseDirectory: baseDirectory,
-        predefinedFiles: selectedFiles
-    };
-    fetch('/save_config', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                alert('Error saving config: ' + data.error);
-            } else {
-                // Refresh the page after successful save
-                location.reload();
+            if (!baseDirectory) {
+                alert('Please select a base directory.');
+                return;
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error saving config: ' + error);
+            const payload = {
+                baseDirectory: baseDirectory,
+                predefinedFiles: selectedFiles
+            };
+            fetch('/save_config', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('Error saving config: ' + data.error);
+                    } else {
+                        // Refresh the page after successful save
+                        location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error saving config: ' + error);
+                });
         });
-});
-
-
 
         document.getElementById('select-all-button').addEventListener('click', () => {
             selectAllItems(true);
@@ -398,7 +578,7 @@
             updateSelectedFilesDisplay();
         }
 
-        // Added event listener for Clear All button
+        // Event listener for Clear All button
         document.getElementById('clear-all-button').addEventListener('click', () => {
             // Reset selected files
             selectedFiles = [];

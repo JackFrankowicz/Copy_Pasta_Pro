@@ -54,12 +54,12 @@ export async function formatResponse(content, container) {
         customOption.textContent = 'Custom Path...';
         fileSelect.appendChild(customOption);
 
-        // Create custom file path input (hidden by default)
-        const customFileInput = document.createElement('input');
-        customFileInput.type = 'text';
-        customFileInput.placeholder = baseDirectory || 'Enter filename to save in base directory';
-        customFileInput.className = 'custom-file-input';
-        customFileInput.style.display = 'none';
+// Create custom file path input (hidden by default)
+const customFileInput = document.createElement('input');
+customFileInput.type = 'text';
+customFileInput.value = baseDirectory || ''; // Pre-fill with base directory text
+customFileInput.className = 'custom-file-input';
+customFileInput.style.display = 'none';
         
         // Show or hide the custom file input based on selection
         fileSelect.addEventListener('change', () => {

@@ -42,19 +42,23 @@ if not os.path.isabs(file_base_directory):
 logger.info(f"Program base directory: {program_base_directory}")
 logger.info(f"File base directory: {file_base_directory}")
 
-# Serve the config directory for program files
-config_directory = os.path.join(program_base_directory, "config")
-if os.path.exists(config_directory):
-    app.mount("/config", StaticFiles(directory=config_directory), name="config")
-else:
-    logger.warning(f"Config directory {config_directory} does not exist")
+# Enhanced path management and mounting for static and config directories
 
-# Serve static files from the /static folder in the program base directory
-static_directory = os.path.join(program_base_directory, "static")
-if os.path.exists(static_directory):
-    app.mount("/static", StaticFiles(directory=static_directory), name="static")
+# Serve the config directory for program files if it exists, log if not
+config_directory = os.path.join(program_base_directory, "config")
+if os.path.exists(config_directory) and os.path.isdir(config_directory):
+    app.mount("/config", StaticFiles(directory=config_directory), name="config")
+    logger.info(f"Config directory mounted at /config from {config_directory}")
 else:
-    logger.warning(f"Static directory {static_directory} does not exist.")
+    logger.warning(f"Config directory {config_directory} does not exist or is not a directory.")
+
+# Serve static files from the /static folder in the program base directory, log if not
+static_directory = os.path.join(program_base_directory, "static")
+if os.path.exists(static_directory) and os.path.isdir(static_directory):
+    app.mount("/static", StaticFiles(directory=static_directory), name="static")
+    logger.info(f"Static directory mounted at /static from {static_directory}")
+else:
+    logger.warning(f"Static directory {static_directory} does not exist or is not a directory.")
 
 # GET: / - Serve index.html from the program base directory
 @app.get("/")
@@ -68,6 +72,13 @@ async def read_root():
     except Exception as e:
         logger.error(f"Error reading index.html: {str(e)}")
         return PlainTextResponse(content="Error reading index.html", status_code=500)
+
+# The rest of the endpoints remain unchanged...
+
+# Ensure this logging is throughout each endpoint for clarity and ease of debugging
+# For example: /settings, /get_default_base_directory, /list_directory, /save_config, etc.
+
+
 
 # GET: /settings - Serve settings.html from the program base directory
 @app.get("/settings")
