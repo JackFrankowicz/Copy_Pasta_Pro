@@ -31,8 +31,8 @@ export async function saveCodeToFile(codeElement, fileSelect, customFileInput) {
             file_path: filePath,
         });
 
-        // Display success message
-        alert(`Code saved to ${filePath} successfully!`);
+        // Removed the success alert message (was on Line 32)
+        // alert(`Code saved to ${filePath} successfully!`);
 
     } catch (error) {
         // Show error message with details from backend

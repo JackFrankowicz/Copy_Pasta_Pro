@@ -1,6 +1,8 @@
 {
-  "baseDirectory": "/home/jack/Documents/temp",
+  "baseDirectory": "/home/jack/aaaDEV",
   "predefinedFiles": [
-    "/home/jack/Documents/temp/hello"
+    "/home/jack/Documents/temp/hello",
+    "/home/jack/aaaDEV/main.py",
+    "/home/jack/aaaDEV/static/apiServices.js"
   ]
 }

@@ -149,7 +149,7 @@ button#settings-button{
     padding: 8px 20px;
     font-size: 16px;
     border-radius: 5px;
-    margin-left: 20px,
+    margin-left: 20px;
 }
 
 /* Button Container with Flexbox Gap */

@@ -84,9 +84,24 @@ export async function formatResponse(content, container) {
         saveButton.textContent = 'Save';
         saveButton.className = 'save-button';
 
-        // Add event listener to the save button
         saveButton.addEventListener('click', async () => {
-            await saveCodeToFile(pre.querySelector('code'), fileSelect, customFileInput);
+            // Disable the button to prevent multiple clicks
+            saveButton.disabled = true;
+            const originalText = saveButton.textContent;
+            try {
+                await saveCodeToFile(pre.querySelector('code'), fileSelect, customFileInput);
+                saveButton.textContent = 'Saved!';
+                // Optionally revert the button text after 2 seconds
+                setTimeout(() => {
+                    saveButton.textContent = originalText;
+                    saveButton.disabled = false;
+                }, 2000);
+            } catch (error) {
+                // Re-enable the button
+                saveButton.disabled = false;
+                // Show error popup
+                alert('Error saving file: ' + (error.message || error));
+            }
         });
 
         // Create the copy button
