@@ -1,12 +1,6 @@
 {
   "baseDirectory": "/home/jack/aaaDEV",
   "predefinedFiles": [
-    "/home/jack/aaaDEV/__pycache__",
-    "/home/jack/aaaDEV/config",
-    "/home/jack/aaaDEV/static",
-    "/home/jack/aaaDEV/index.html",
-    "/home/jack/aaaDEV/main.py",
-    "/home/jack/aaaDEV/requirements.txt",
-    "/home/jack/aaaDEV/settings.html"
+    "/home/jack/aaaDEV/static/preset text snippets/TEST.txt"
   ]
 }

@@ -216,7 +216,6 @@ button#settings-button{
 .code-header {
     display: flex;
     align-items: center;
-    background-color: #252526;
     padding: 10px;
     padding-bottom: 5px;
     border-radius: 5px 5px 0 0;

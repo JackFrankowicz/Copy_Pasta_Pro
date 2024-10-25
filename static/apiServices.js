@@ -1,11 +1,11 @@
 // apiServices.js
 
-// Import necessary functions with correct relative path
-import { formatResponse } from './uiComponents.js'; // Adjust the path as needed
+// Import necessary functions
+import { formatResponse } from './uiComponents.js';
 
 // Function to save code to a file via backend API
-export async function saveCodeToFile(codeBlock, fileSelect, customFileInput) {
-    const codeContent = codeBlock.textContent; // Grab the content of the code block
+export async function saveCodeToFile(codeElement, fileSelect, customFileInput) {
+    const codeContent = codeElement.textContent; // Grab the content of the code element
     let filePath = fileSelect.value; // Get the selected file path from dropdown
 
     // Check if the custom path option is selected
@@ -157,5 +157,18 @@ export async function getPredefinedFiles() {
     } catch (error) {
         console.error('Error loading config:', error);
         return [];
+    }
+}
+
+// Function to save code via the backend API (if needed elsewhere)
+export async function saveCode(content, filePath) {
+    try {
+        await axios.post('/save_code', {
+            code: content,
+            file_path: filePath,
+        });
+        alert(`Code saved to ${filePath} successfully!`);
+    } catch (error) {
+        alert(`Failed to save code: ${error.response?.data || error.message}`);
     }
 }
