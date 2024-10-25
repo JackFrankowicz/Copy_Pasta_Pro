@@ -1,7 +1,12 @@
 {
   "baseDirectory": "/home/jack/aaaDEV",
   "predefinedFiles": [
+    "/home/jack/aaaDEV/__pycache__",
+    "/home/jack/aaaDEV/config",
+    "/home/jack/aaaDEV/static",
+    "/home/jack/aaaDEV/index.html",
     "/home/jack/aaaDEV/main.py",
-    "/home/jack/aaaDEV/static/init.js"
+    "/home/jack/aaaDEV/requirements.txt",
+    "/home/jack/aaaDEV/settings.html"
   ]
 }
