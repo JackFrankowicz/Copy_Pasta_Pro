@@ -7,27 +7,60 @@
     <title>Settings</title>
     <link rel="stylesheet" href="/static/styles.css">
     <style>
-        /* Additional styles */
-        .directory-list {
-            list-style-type: none;
-            padding-left: 0;
-        }
-        .directory-item, .file-item {
-            display: flex;
-            align-items: center;
-            padding-left: 20px;
-            cursor: pointer;
+        /* General Styles */
+        body {
+            background-color: #1e1e1e;
             color: #d4d4d4;
-            margin-bottom: 5px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        .item-label {
-            margin-left: 3px;
+        .container {
+            margin: 0 auto;
+            padding: 20px;
+            max-width: 800px;
         }
-        .directory-item:hover, .file-item:hover {
-            background-color: #333;
+        .futuristic-title {
+            font-family: 'Audiowide', cursive;
+            color: #61dafb;
+            text-align: center;
         }
-        .selected {
+        .icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Buttons */
+        .back-button,
+        .browse-button,
+        .select-button,
+        .save-button {
+            padding: 8px 15px;
+            font-size: 16px;
+            border-radius: 5px;
             background-color: #0e639c;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+        .back-button:hover,
+        .save-button:hover,
+        .browse-button:hover,
+        .select-button:hover {
+            background-color: #1177bb;
+        }
+        .save-button {
+            padding: 8px 20px;
+            margin-top: 15px;
+        }
+
+        /* Input Area */
+        .input-area {
+            display: flex;
+            flex-direction: column;
         }
         .path-input {
             width: 80%;
@@ -38,45 +71,22 @@
             border-radius: 5px;
             font-size: 16px;
         }
-        .browse-button, .select-button {
-            padding: 8px 15px;
-            font-size: 16px;
-            border-radius: 5px;
-            background-color: #0e639c;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-        .save-button {
-            padding: 8px 20px;
-            font-size: 16px;
-            border-radius: 5px;
-            background-color: #0e639c;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-        .save-button:hover, .browse-button:hover, .select-button:hover {
-            background-color: #1177bb;
-        }
-        .icon {
-            width: 24px;
-            height: 24px;
-        }
-        .buttons-container {
+        .path-input-container {
             display: flex;
             align-items: center;
-            gap: 10px;
         }
+        .path-input-container .select-button,
+        .path-input-container .browse-button {
+            margin-left: 10px;
+        }
+
+        /* Current Path */
         #current-path-container {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: center;
             margin-top: 15px;
             margin-bottom: 10px;
-            color: #d4d4d4;
             font-size: 16px;
         }
         #current-path span {
@@ -86,57 +96,106 @@
         #current-path span:hover {
             color: #61dafb;
         }
-        .back-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            padding: 8px 15px;
-            font-size: 16px;
-            border-radius: 5px;
-            background-color: #0e639c;
-            color: #fff;
-            border: none;
+        .directory-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .directory-item,
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding-left: 20px;
             cursor: pointer;
+            margin-bottom: 5px;
         }
-        .back-button:hover {
-            background-color: #1177bb;
+        .item-label {
+            margin-left: 3px;
         }
+        .directory-item:hover,
+        .file-item:hover {
+            background-color: #333;
+        }
+        .buttons-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Scrollable Section */
+        .scrollable-section {
+            max-height: 300px; /* Adjust as needed */
+            overflow-y: auto;
+            padding-right: 10px;
+            box-sizing: border-box;
+        }
+
+        /* Selected Paths */
+        .selected-paths-title {
+            color: #61dafb;
+            padding-top: 15px;
+        }
+
+        /* Save Buttons Container */
         .save-buttons-container {
             display: flex;
             align-items: center;
             gap: 10px;
             margin-top: 15px;
         }
+
         /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
             z-index: 1;
-            left: 0;
             top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
             background-color: rgba(0,0,0,0.4);
+            padding: 20px;
+            box-sizing: border-box;
         }
         .modal-content {
             background-color: #2d2d2d;
-            margin: 5% auto;
+            margin: auto;
             padding: 20px;
-            border: 1px solid #3c3c3c;
             width: 80%;
+            height: 80%;
             color: #d4d4d4;
+            display: flex;
+            flex-direction: column;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex: none;
+        }
+        .modal-title {
+            margin: 0;
+            font-size: 24px;
+            color: #61dafb;
         }
         .close-button {
             color: #aaa;
-            float: right;
             font-size: 28px;
             font-weight: bold;
-        }
-        .close-button:hover, .close-button:focus {
-            color: #fff;
-            text-decoration: none;
             cursor: pointer;
+            transition: color 0.3s;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: #fff;
+        }
+        .modal-current-path-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 16px;
+            flex: none;
         }
         #modal-current-path span {
             cursor: pointer;
@@ -145,15 +204,58 @@
         #modal-current-path span:hover {
             color: #61dafb;
         }
+        .modal-directory-contents-container {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            padding-right: 10px;
+        }
         #modal-directory-contents ul {
-            list-style-type: none;
+            list-style: none;
             padding-left: 0;
         }
-        #modal-directory-contents li {
-            margin: 5px 0;
+        .modal-footer {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 20px;
+            flex: none;
         }
-        .modal .select-button {
-            margin-top: 15px;
+        .modal-select-button {
+            margin-top: 0;
+        }
+
+        /* Scrollbar Styles */
+        #directory-contents::-webkit-scrollbar,
+        .modal-directory-contents-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        #directory-contents::-webkit-scrollbar-thumb,
+        .modal-directory-contents-container::-webkit-scrollbar-thumb {
+            background-color: #555;
+            border-radius: 4px;
+        }
+        #directory-contents::-webkit-scrollbar-thumb:hover,
+        .modal-directory-contents-container::-webkit-scrollbar-thumb:hover {
+            background-color: #777;
+        }
+        .scrollable-section {
+            max-height: 300px; /* Adjust as needed */
+            overflow-y: auto;
+            padding-right: 10px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+        .selected-paths-title {
+            color: #61dafb;
+            padding-top: 15px;
+            padding-left: 20px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        #selected-files {
+            list-style-type: disc;
+            padding-left: 30px;
+            margin-bottom: 15px;
         }
     </style>
 </head>
@@ -163,23 +265,24 @@
         <h1 class="futuristic-title">Settings</h1>
         <div class="input-area">
             <label for="base-directory">Base Directory:</label>
-            <div style="display: flex; align-items: center;">
+            <div class="path-input-container">
                 <input type="text" id="base-directory" class="path-input" placeholder="Enter base directory path">
                 <button id="select-button" class="select-button">Select</button>
                 <button id="browse-button" class="browse-button">Browse</button>
             </div>
-            <div id="current-path-container" style="display: flex; align-items: center; justify-content: flex-start;">
+            <div id="current-path-container">
                 <div id="current-path"><span>/</span><span>/</span><span>home</span></div>
-                <div class="buttons-container" style="display: flex; gap: 0px; margin-left: 1px;">
+                <div class="buttons-container">
                     <button id="select-all-button" class="select-button">Select All</button>
                     <button id="deselect-all-button" class="select-button">Select None</button>
-                
+                </div>
             </div>
-            
+            <!-- Lines 141-145: Wrapped the following elements inside a new div -->
+            <div class="scrollable-section">
+                <div id="directory-contents"></div>
+                <h2 class="selected-paths-title">Selected Paths</h2>
+                <ul id="selected-files"></ul>
             </div>
-            <div id="directory-contents"></div>
-            <h2 style="color: #61dafb; padding-top: 15px;">Selected Paths</h2>
-            <ul id="selected-files"></ul>
             <div class="save-buttons-container">
                 <button id="save-config-button" class="save-button">Save Config</button>
                 <button id="clear-all-button" class="save-button">Clear All</button>
@@ -190,15 +293,34 @@
     <!-- Directory Browser Modal -->
     <div id="directory-modal" class="modal">
         <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <h2>Select Base Directory</h2>
-            <div id="modal-current-path-container">
+            <!-- Header with Title and Close Button -->
+            <div class="modal-header">
+                <h2 class="modal-title">Select Base Directory</h2>
+                <span class="close-button">&times;</span>
+            </div>
+            
+            <!-- Fixed Current Path Container -->
+            <div id="modal-current-path-container" class="modal-current-path-container">
                 <div id="modal-current-path"></div>
             </div>
-            <div id="modal-directory-contents"></div>
-            <button id="modal-select-button" class="select-button">Select Directory</button>
+            
+            <!-- Scrollable Directory Contents -->
+            <div class="modal-directory-contents-container">
+                <div id="modal-directory-contents"></div>
+            </div>
+            
+            <!-- Footer with Select Directory Button -->
+            <div class="modal-footer">
+                <button id="modal-select-button" class="select-button modal-select-button">Select Directory</button>
+            </div>
         </div>
     </div>
+
+    <script>
+        // JavaScript code remains unchanged
+    </script>
+</body>
+</html>
 
     <script>
         let baseDirectory = '';
@@ -213,27 +335,11 @@
                 fetch('/get_config').then(response => response.json())
             ])
             .then(([defaultData, configData]) => {
-                // Set defaultBaseDirectory to the program's base directory
                 defaultBaseDirectory = defaultData.default_base_directory;
-
-                // Set baseDirectory to the program's base directory by default
-                baseDirectory = defaultBaseDirectory;
-
-                // If config.json has a baseDirectory, use that instead
-                if (configData.baseDirectory) {
-                    baseDirectory = configData.baseDirectory;
-                }
-
-                // Set the input field to the baseDirectory
+                baseDirectory = configData.baseDirectory || defaultBaseDirectory;
                 document.getElementById('base-directory').value = baseDirectory;
-
-                // Set selectedFiles from config.json if available
                 selectedFiles = configData.predefinedFiles || [];
-
-                // Load the base directory contents
                 loadDirectoryContents(baseDirectory);
-
-                // Update the selected files display
                 updateSelectedFilesDisplay();
             })
             .catch(error => {
@@ -258,7 +364,7 @@
 
         document.getElementById('browse-button').addEventListener('click', () => {
             modal.style.display = 'block';
-            modalCurrentPath = '/'; // Start from root
+            modalCurrentPath = '/';
             loadModalDirectoryContents(modalCurrentPath);
         });
 
@@ -297,48 +403,57 @@
         }
 
         function updateModalCurrentPathDisplay() {
-            const pathContainer = document.getElementById('modal-current-path');
-            const pathParts = modalCurrentPath.split('/').filter(part => part !== '');
-            pathContainer.innerHTML = ''; // Clear previous
+    const pathContainer = document.getElementById('modal-current-path');
+    
+    // Remove any trailing slashes and split the path into parts
+    const pathParts = modalCurrentPath.replace(/\/+$/, '').split('/').filter(part => part !== '');
+    pathContainer.innerHTML = '';
 
-            const baseLink = document.createElement('span');
-            baseLink.textContent = '/';
-            baseLink.addEventListener('click', () => {
-                loadModalDirectoryContents('/');
-            });
-            pathContainer.appendChild(baseLink);
+    // Create and append the base directory link ('/')
+    const baseLink = document.createElement('span');
+    baseLink.textContent = '/';
+    baseLink.style.cursor = 'pointer'; // Indicate that it's clickable
+    baseLink.style.color = '#61dafb'; // Optional: Style to indicate it's a link
+    baseLink.addEventListener('click', () => {
+        loadModalDirectoryContents('/'); // Load the root directory when '/' is clicked
+    });
+    pathContainer.appendChild(baseLink);
 
-            let accumulatedPath = '';
-            pathParts.forEach((part, index) => {
-                accumulatedPath += '/' + part;
-                const separator = document.createElement('span');
-                separator.textContent = '/';
-                pathContainer.appendChild(separator);
+    // Iterate over each part of the path to create clickable segments
+    pathParts.forEach((part, index) => {
+        // Add a separator '/'
+        const separator = document.createElement('span');
+        separator.textContent = '/';
+        pathContainer.appendChild(separator);
 
-                const partLink = document.createElement('span');
-                partLink.textContent = part;
-                partLink.addEventListener('click', () => {
-                    loadModalDirectoryContents(accumulatedPath);
-                });
-                pathContainer.appendChild(partLink);
-            });
-        }
+        // Construct the path up to the current part
+        const pathUpToThis = '/' + pathParts.slice(0, index + 1).join('/');
+
+        // Create the clickable segment
+        const partLink = document.createElement('span');
+        partLink.textContent = part;
+        partLink.style.cursor = 'pointer'; // Indicate that it's clickable
+        partLink.style.color = '#61dafb'; // Optional: Style to indicate it's a link
+        partLink.addEventListener('click', () => {
+            loadModalDirectoryContents(pathUpToThis); // Load the specific directory when clicked
+        });
+        pathContainer.appendChild(partLink);
+    });
+}
+
 
         function displayModalDirectoryContents(entries, path) {
             const container = document.getElementById('modal-directory-contents');
-            container.innerHTML = ''; // Clear previous contents
+            container.innerHTML = '';
             const list = document.createElement('ul');
             list.classList.add('directory-list');
 
             entries.sort((a, b) => {
-                // Directories first
                 if (a.is_dir && !b.is_dir) return -1;
                 if (!a.is_dir && b.is_dir) return 1;
-                // Then alphabetically
                 return a.name.localeCompare(b.name);
             });
 
-            // Add parent directory option
             if (path !== '/') {
                 const parentItem = document.createElement('li');
                 const parentDiv = document.createElement('div');
@@ -357,22 +472,17 @@
                     const item = document.createElement('li');
                     const itemDiv = document.createElement('div');
                     itemDiv.classList.add('directory-item');
-
                     const icon = document.createElement('img');
                     icon.src = '/static/icons/folder.svg';
                     icon.classList.add('icon');
-
                     const label = document.createElement('span');
                     label.textContent = entry.name;
                     label.classList.add('item-label');
-
                     itemDiv.appendChild(icon);
                     itemDiv.appendChild(label);
-
                     itemDiv.addEventListener('click', () => {
                         loadModalDirectoryContents(entry.path);
                     });
-
                     item.appendChild(itemDiv);
                     list.appendChild(item);
                 }
@@ -399,56 +509,63 @@
         }
 
         function updateCurrentPathDisplay() {
-            const pathContainer = document.getElementById('current-path');
-            // Split the current path into parts
-            const pathParts = currentPath.split('/').filter(part => part !== '');
-            pathContainer.innerHTML = ''; // Clear previous
+    const pathContainer = document.getElementById('current-path');
+    // Remove any trailing slashes and split the path into parts
+    const pathParts = currentPath.replace(/\/+$/, '').split('/').filter(part => part !== '');
+    pathContainer.innerHTML = '';
 
-            const baseLink = document.createElement('span');
-            baseLink.textContent = '/';
-            baseLink.addEventListener('click', () => {
-                loadDirectoryContents('/');
-            });
-            pathContainer.appendChild(baseLink);
+    // Create and append the base directory link ('/')
+    const baseLink = document.createElement('span');
+    baseLink.textContent = '/';
+    baseLink.style.cursor = 'pointer'; // Change cursor to indicate it's clickable
+    
+    baseLink.addEventListener('click', () => {
+        loadDirectoryContents('/'); // Load the root directory when '/' is clicked
+    });
+    pathContainer.appendChild(baseLink);
 
-            let accumulatedPath = '';
-            pathParts.forEach((part, index) => {
-                accumulatedPath += '/' + part;
-                const separator = document.createElement('span');
-                separator.textContent = '/';
-                pathContainer.appendChild(separator);
+    // Iterate over each part of the path to create clickable segments
+    pathParts.forEach((part, index) => {
+        // Add a separator '/'
+        const separator = document.createElement('span');
+        separator.textContent = '/';
+        pathContainer.appendChild(separator);
 
-                const partLink = document.createElement('span');
-                partLink.textContent = part;
-                partLink.addEventListener('click', () => {
-                    loadDirectoryContents(accumulatedPath);
-                });
-                pathContainer.appendChild(partLink);
-            });
-        }
+        // Construct the path up to the current part
+        const pathUpToThis = '/' + pathParts.slice(0, index + 1).join('/');
+
+        // Create the clickable segment
+        const partLink = document.createElement('span');
+        partLink.textContent = part;
+        partLink.style.cursor = 'pointer'; // Change cursor to indicate it's clickable
+        partLink.style.color = '#61dafb'; // Optional: Add styling to indicate it's a link
+        partLink.addEventListener('click', () => {
+            loadDirectoryContents(pathUpToThis); // Load the specific directory when clicked
+        });
+        pathContainer.appendChild(partLink);
+    });
+}
+
 
         function displayDirectoryContents(entries, path) {
             const container = document.getElementById('directory-contents');
-            container.innerHTML = ''; // Clear previous contents
+            container.innerHTML = '';
             const list = document.createElement('ul');
             list.classList.add('directory-list');
 
             entries.sort((a, b) => {
-                // Directories first
                 if (a.is_dir && !b.is_dir) return -1;
                 if (!a.is_dir && b.is_dir) return 1;
-                // Then alphabetically
                 return a.name.localeCompare(b.name);
             });
 
-            // Add parent directory option
             if (path !== baseDirectory) {
                 const parentItem = document.createElement('li');
                 const parentDiv = document.createElement('div');
                 parentDiv.classList.add('directory-item');
                 parentDiv.innerHTML = '<img src="/static/icons/folder.svg" class="icon"><span class="item-label">..</span>';
                 parentDiv.addEventListener('click', () => {
-                    const parentPath = path.substring(0, path.lastIndexOf('/')) || '/';
+                    const parentPath = path.substring(0, path.lastIndexOf('/')) || baseDirectory;
                     loadDirectoryContents(parentPath);
                 });
                 parentItem.appendChild(parentDiv);
@@ -459,8 +576,6 @@
                 const item = document.createElement('li');
                 const itemDiv = document.createElement('div');
                 itemDiv.classList.add(entry.is_dir ? 'directory-item' : 'file-item');
-
-                // Store the path in data attribute
                 itemDiv.dataset.path = entry.path;
 
                 const checkbox = document.createElement('input');
@@ -471,8 +586,6 @@
                     event.stopPropagation();
                     toggleFileSelection(entry.path, checkbox.checked);
                 });
-
-                // Prevent parent click event when clicking checkbox
                 checkbox.addEventListener('click', (event) => {
                     event.stopPropagation();
                 });
@@ -489,7 +602,7 @@
                 itemDiv.appendChild(icon);
                 itemDiv.appendChild(label);
 
-                itemDiv.addEventListener('click', (event) => {
+                itemDiv.addEventListener('click', () => {
                     if (entry.is_dir) {
                         loadDirectoryContents(entry.path);
                     } else {
@@ -550,7 +663,6 @@
                     if (data.error) {
                         alert('Error saving config: ' + data.error);
                     } else {
-                        // Refresh the page after successful save
                         location.reload();
                     }
                 })
@@ -578,23 +690,15 @@
             updateSelectedFilesDisplay();
         }
 
-        // Event listener for Clear All button
         document.getElementById('clear-all-button').addEventListener('click', () => {
-            // Reset selected files
             selectedFiles = [];
             updateSelectedFilesDisplay();
-
-            // Uncheck all checkboxes in the directory contents
             const checkboxes = document.querySelectorAll('#directory-contents input[type="checkbox"]');
             checkboxes.forEach(checkbox => {
                 checkbox.checked = false;
             });
-
-            // Reset base directory to default
             baseDirectory = defaultBaseDirectory;
             document.getElementById('base-directory').value = baseDirectory;
-
-            // Reload directory contents
             loadDirectoryContents(baseDirectory);
         });
     </script>
